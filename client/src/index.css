@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-white font-sans antialiased;
+  }
+}
+
+.glass-panel {
+  @apply bg-surface bg-opacity-70 backdrop-blur-lg border border-white/10 shadow-xl rounded-2xl;
+}
+
+.neon-glow {
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.5);
+}

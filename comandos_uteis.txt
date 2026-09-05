@@ -1,0 +1,42 @@
+====================================================
+  COMANDOS ÚTEIS PARA O DESENVOLVIMENTO DO TUNEIN
+====================================================
+
+Como a nossa aplicação está dividida em duas partes (Client e Server), precisas de correr dois servidores em terminais diferentes para que o jogo funcione por completo.
+
+----------------------------------------------------
+1. INICIAR O SERVIDOR (BACKEND)
+----------------------------------------------------
+Abre um terminal (linha de comandos), navega para a pasta do servidor e executa o ficheiro index.js:
+
+  cd C:\Users\User\Desktop\TuneIn\server
+  node index.js
+
+Isto vai iniciar o servidor Socket.io na porta 3001. 
+Se já estiver a correr e tentares iniciar de novo, vais receber um erro (EADDRINUSE).
+Para parar o servidor, clica no terminal onde ele está a correr e pressiona:
+  CTRL + C
+
+
+----------------------------------------------------
+2. INICIAR A APLICAÇÃO (FRONTEND)
+----------------------------------------------------
+Abre um segundo terminal, navega para a pasta do cliente e executa o servidor de desenvolvimento do Vite:
+
+  cd C:\Users\User\Desktop\TuneIn\client
+  npm run dev
+
+Isto vai iniciar o Frontend (geralmente em http://localhost:5173). 
+Para parar a aplicação, clica no terminal onde ela está a correr e pressiona:
+  CTRL + C
+
+
+----------------------------------------------------
+RESUMO DE ATALHOS / COMANDOS GERAIS
+----------------------------------------------------
+- Iniciar Backend:       node index.js (dentro da pasta /server)
+- Iniciar Frontend:      npm run dev (dentro da pasta /client)
+- Parar qualquer um:     CTRL + C (no respetivo terminal)
+- Instalar dependências: npm install (caso adiciones novos pacotes no futuro)
+
+Dica: Quando alteras o código no Frontend (React), o "npm run dev" atualiza automaticamente o ecrã (Hot Module Replacement) sem precisares de reiniciar. No Backend (Node.js), se fizeres alterações aos ficheiros, precisas de fechar (CTRL+C) e voltar a abrir (node index.js) para que ele assuma o novo código!
