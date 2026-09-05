@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { SocketProvider } from './context/SocketContext';
 import Home from './pages/Home';
 import Room from './pages/Room';
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           </Routes>
         </div>
       </BrowserRouter>
+      <Analytics />
     </SocketProvider>
   );
 }
