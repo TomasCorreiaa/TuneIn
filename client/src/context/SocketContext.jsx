@@ -9,8 +9,9 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // In development, point to the backend server
-    const newSocket = io('http://localhost:3001');
+    // In development use localhost, in production use VITE_BACKEND_URL
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    const newSocket = io(backendUrl);
     setSocket(newSocket);
 
     return () => newSocket.close();
