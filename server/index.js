@@ -5,12 +5,14 @@ const cors = require('cors');
 const roomManager = require('./RoomManager');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://tunein.curredev.com', 'http://localhost:5173', 'http://localhost:3000']
+}));
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: ['https://tunein.curredev.com', 'http://localhost:5173', 'http://localhost:3000'],
     methods: ['GET', 'POST']
   }
 });
