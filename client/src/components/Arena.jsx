@@ -86,10 +86,10 @@ export default function Arena({ room, socket }) {
         ></div>
       </div>
 
-      <div className="flex-grow flex flex-col md:flex-row p-6 gap-6 h-full overflow-hidden">
+      <div className="flex-grow flex flex-col md:flex-row p-4 md:p-6 gap-6 overflow-y-auto md:overflow-hidden pb-10 md:pb-0">
         
         {/* Lado Esquerdo: Player Info */}
-        <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
+        <div className="w-full md:w-1/2 flex flex-col items-center justify-center flex-shrink-0">
           <div className="mb-6 relative flex items-center justify-center w-64 h-64 rounded-full border-4 border-accent-purple neon-glow">
             <div className="absolute inset-0 bg-accent-purple/20 rounded-full animate-ping"></div>
             <div className="z-10 text-center">
@@ -133,7 +133,7 @@ export default function Arena({ room, socket }) {
         </div>
 
         {/* Lado Direito: Chat de Adivinhação */}
-        <div className="w-full md:w-1/2 flex flex-col bg-surface border border-gray-700 rounded-xl overflow-hidden">
+        <div className="w-full md:w-1/2 flex flex-col bg-surface border border-gray-700 rounded-xl overflow-hidden min-h-[400px] md:min-h-0 md:h-full">
           <div className="bg-background p-3 font-bold border-b border-gray-700">{t('guess_chat')}</div>
           
           <div className="flex-grow overflow-y-auto p-4 space-y-2">

@@ -104,11 +104,11 @@ export default function Lobby({ room, socket }) {
         <p className="text-gray-400">{t('lobby_subtitle')}</p>
       </div>
 
-      <div className="flex-grow flex flex-col md:flex-row gap-8 overflow-hidden">
+      <div className="flex-grow flex flex-col md:flex-row gap-6 md:gap-8 overflow-y-auto md:overflow-hidden pb-10 md:pb-0">
         {/* Players List & Settings */}
-        <div className="w-full md:w-1/3 flex flex-col gap-4 h-full overflow-hidden">
+        <div className="w-full md:w-1/3 flex flex-col gap-4 md:h-full flex-shrink-0">
           {/* Players List */}
-          <div className="bg-background/50 rounded-xl p-4 border border-gray-700 flex flex-col flex-grow overflow-y-auto">
+          <div className="bg-background/50 rounded-xl p-4 border border-gray-700 flex flex-col flex-grow overflow-y-auto max-h-[250px] md:max-h-none">
             <h3 className="font-bold mb-4 text-accent-orange flex-shrink-0">{t('players_in_room', { count: room.players.length })}</h3>
             <div className="space-y-3 flex-grow">
               {room.players.map(player => (
@@ -180,9 +180,9 @@ export default function Lobby({ room, socket }) {
         </div>
 
         {/* Music Selection */}
-        <div className="w-full md:w-2/3 flex flex-col h-full overflow-hidden">
+        <div className="w-full md:w-2/3 flex flex-col md:h-full md:overflow-hidden min-h-[400px]">
           {!isReady ? (
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col md:h-full">
               <form onSubmit={handleSearch} className="mb-4 flex space-x-2">
                 <input 
                   type="text" 
