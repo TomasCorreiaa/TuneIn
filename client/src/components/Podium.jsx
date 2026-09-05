@@ -24,7 +24,7 @@ export default function Podium({ room, socket }) {
       </div>
 
       {/* Podium Top 3 */}
-      <div className="flex justify-center items-end gap-2 sm:gap-4 mb-8 h-56 flex-shrink-0">
+      <div className="flex justify-center items-end gap-2 sm:gap-4 mt-8 mb-8 flex-shrink-0">
         {/* 2nd Place */}
         {top3[1] && (
           <div className="flex flex-col items-center">

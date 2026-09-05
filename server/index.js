@@ -50,28 +50,49 @@ io.on('connection', (socket) => {
     }
   });
 
-  const startRoundTimer = (roomId, durationSeconds) => {
-    setTimeout(() => {
-      roomManager.endGame(roomId);
-      const endRoom = roomManager.getRoom(roomId);
-      if (!endRoom) return;
-      
-      io.to(roomId).emit('gameEnded', endRoom);
+  const roundTimeouts = new Map();
 
-      if (endRoom.autoNextRound && endRoom.currentRound < endRoom.tracksToPlay.length - 1) {
-        setTimeout(() => {
-          const isPlaying = roomManager.nextRound(roomId);
-          const newRoom = roomManager.getRoom(roomId);
-          if (newRoom) {
-            io.to(roomId).emit('roomUpdated', newRoom);
-            if (isPlaying) {
-              startRoundTimer(roomId, newRoom.roundDuration);
-            }
+  const triggerEndRound = (roomId) => {
+    roomManager.endGame(roomId);
+    const endRoom = roomManager.getRoom(roomId);
+    if (!endRoom) return;
+    
+    io.to(roomId).emit('gameEnded', endRoom);
+
+    if (endRoom.autoNextRound && endRoom.currentRound < endRoom.tracksToPlay.length - 1) {
+      setTimeout(() => {
+        const isPlaying = roomManager.nextRound(roomId);
+        const newRoom = roomManager.getRoom(roomId);
+        if (newRoom) {
+          io.to(roomId).emit('roomUpdated', newRoom);
+          if (isPlaying) {
+            startRoundTimer(roomId, newRoom.roundDuration);
           }
-        }, 5000);
-      }
-    }, durationSeconds * 1000);
+        }
+      }, 5000);
+    }
   };
+
+  const startRoundTimer = (roomId, durationSeconds) => {
+    if (roundTimeouts.has(roomId)) clearTimeout(roundTimeouts.get(roomId));
+    
+    const timeout = setTimeout(() => {
+      triggerEndRound(roomId);
+    }, durationSeconds * 1000);
+    
+    roundTimeouts.set(roomId, timeout);
+  };
+
+  socket.on('skipRound', ({ roomId }) => {
+    const room = roomManager.getRoom(roomId);
+    if (room && room.hostId === socket.id && room.state === 'arena') {
+      if (roundTimeouts.has(roomId)) {
+        clearTimeout(roundTimeouts.get(roomId));
+        roundTimeouts.delete(roomId);
+      }
+      triggerEndRound(roomId);
+    }
+  });
 
   socket.on('setReady', ({ roomId, trackUrl }) => {
     roomManager.setPlayerReady(roomId, socket.id, trackUrl);

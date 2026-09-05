@@ -46,6 +46,7 @@ const resources = {
       "you_picked_this": "You picked this song!",
       "already_guessed_all": "You already guessed everything!",
       "type_guess": "Type your guess...",
+      "skip_round": "Skip Round",
       
       // Scoreboard
       "round_end_title": "End of Round!",
@@ -122,6 +123,7 @@ const resources = {
       "you_picked_this": "Tu escolheste a música!",
       "already_guessed_all": "Já acertaste tudo!",
       "type_guess": "Escreve o teu palpite...",
+      "skip_round": "Revelar Música",
       
       // Scoreboard
       "round_end_title": "Fim da Rodada!",
@@ -198,6 +200,7 @@ const resources = {
       "you_picked_this": "¡Tú elegiste la canción!",
       "already_guessed_all": "¡Ya acertaste todo!",
       "type_guess": "Escribe tu suposición...",
+      "skip_round": "Saltar Ronda",
       
       // Scoreboard
       "round_end_title": "¡Fin de la Ronda!",

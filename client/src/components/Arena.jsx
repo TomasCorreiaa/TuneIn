@@ -24,6 +24,8 @@ export default function Arena({ room, socket }) {
 
   const me = room.players.find(p => p.id === socket.id);
   const isOwner = room.trackOwner === me?.id;
+  const playingPlayers = room.players.filter(p => p.id !== room.trackOwner);
+  const allGuessed = playingPlayers.length > 0 && playingPlayers.every(p => p.guessedTitle && p.guessedArtist);
   
   useEffect(() => {
     // Populate initial messages if any
@@ -119,6 +121,15 @@ export default function Arena({ room, socket }) {
               title="Volume da Música"
             />
           </div>
+
+          {room.hostId === me?.id && allGuessed && (
+            <button 
+              onClick={() => socket.emit('skipRound', { roomId: room.id })}
+              className="mt-6 w-full max-w-[250px] bg-gradient-to-r from-accent-orange to-accent-pink hover:opacity-90 text-white font-bold py-3 px-4 rounded-lg neon-glow transition-all"
+            >
+              {t('skip_round', 'Skip Round')}
+            </button>
+          )}
         </div>
 
         {/* Lado Direito: Chat de Adivinhação */}
