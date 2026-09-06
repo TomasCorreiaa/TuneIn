@@ -6,6 +6,12 @@ function cleanString(str) {
   return cleaned.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, "");
 }
 
+function cleanForDisplay(str) {
+  if (!str) return '';
+  // Remove content inside parenthesis or brackets, and extra spaces
+  return str.replace(/\([^)]*\)/g, '').replace(/\[[^\]]*\]/g, '').replace(/\s{2,}/g, ' ').trim();
+}
+
 function levenshtein(a, b) {
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
@@ -160,10 +166,41 @@ class RoomManager {
 
     const roundData = room.tracksToPlay[room.currentRound];
     room.trackOwner = roundData.ownerId;
-    room.track = roundData.track;
+    room.track = {
+      ...roundData.track,
+      title: cleanForDisplay(roundData.track.title),
+      artist: cleanForDisplay(roundData.track.artist)
+    };
     room.state = 'arena';
     room.roundStartTime = Date.now();
     room.messages = [];
+
+    const getAlphaIndices = (str) => {
+      const indices = [];
+      const normalizedStr = str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+      for (let i = 0; i < normalizedStr.length; i++) {
+        if (/[a-zA-Z]/.test(normalizedStr[i])) {
+          indices.push(i);
+        }
+      }
+      return indices;
+    };
+
+    const generateRevealIndices = (str) => {
+      if (!str) return [];
+      const alphaIndices = getAlphaIndices(str);
+      const numToReveal = Math.floor(alphaIndices.length / 2);
+      for (let i = alphaIndices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [alphaIndices[i], alphaIndices[j]] = [alphaIndices[j], alphaIndices[i]];
+      }
+      return alphaIndices.slice(0, numToReveal);
+    };
+
+    room.revealData = {
+      titleIndices: generateRevealIndices(room.track.title),
+      artistIndices: generateRevealIndices(room.track.artist)
+    };
     
     room.players.forEach(p => {
       p.guessedTitle = false;

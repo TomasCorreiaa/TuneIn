@@ -27,6 +27,34 @@ export default function Arena({ room, socket }) {
   const playingPlayers = room.players.filter(p => p.id !== room.trackOwner);
   const allGuessed = playingPlayers.length > 0 && playingPlayers.every(p => p.guessedTitle && p.guessedArtist);
   
+  const renderMaskedText = (text, revealIndices, isGuessed) => {
+    if (!text) return null;
+    if (isGuessed || isOwner) {
+      return <span className="font-bold tracking-widest text-xl">{text}</span>;
+    }
+    
+    const progress = 1 - (timeLeft / (room.roundDuration || 30));
+    const numToReveal = Math.floor(progress * (revealIndices?.length || 0));
+    const indicesToReveal = new Set((revealIndices || []).slice(0, numToReveal));
+    
+    const normalizedText = text.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    
+    return (
+      <div className="flex flex-wrap justify-center gap-x-1 gap-y-2">
+        {text.split('').map((char, index) => {
+          const isAlpha = /[a-zA-Z]/.test(normalizedText[index]);
+          if (!isAlpha) {
+            return char === ' ' ? <span key={index} className="w-3"></span> : <span key={index} className="font-bold text-xl">{char}</span>;
+          }
+          if (indicesToReveal.has(index)) {
+            return <span key={index} className="text-accent-pink font-bold text-xl uppercase border-b-2 border-accent-pink min-w-[16px] text-center">{char}</span>;
+          }
+          return <span key={index} className="text-transparent font-bold text-xl border-b-2 border-gray-500 min-w-[16px] inline-block text-center">_</span>;
+        })}
+      </div>
+    );
+  };
+  
   useEffect(() => {
     // Populate initial messages if any
     setMessages(room.messages || []);
@@ -101,12 +129,18 @@ export default function Arena({ room, socket }) {
           <h3 className="text-xl mb-2 font-bold text-center">{t('try_guess')}</h3>
           <p className="text-gray-400 text-center mb-4">{t('guess_hint')}</p>
           
-          <div className="flex gap-4 mb-6">
-            <div className={`px-4 py-2 rounded border ${me?.guessedTitle ? 'bg-green-500/20 border-green-500 text-green-400' : 'bg-surface border-gray-700 text-gray-400'}`}>
-              {t('title')} {me?.guessedTitle ? '✓' : '?'}
+          <div className="flex flex-col w-full max-w-md gap-4 mb-6">
+            <div className={`w-full px-4 py-4 rounded-xl border flex flex-col items-center justify-center ${me?.guessedTitle ? 'bg-green-500/10 border-green-500/50' : 'bg-surface border-gray-700'}`}>
+              <span className={`text-xs uppercase tracking-wider mb-2 font-bold ${me?.guessedTitle ? 'text-green-400' : 'text-gray-400'}`}>
+                {t('title')} {me?.guessedTitle && '✓'}
+              </span>
+              {renderMaskedText(room.track?.title, room.revealData?.titleIndices, me?.guessedTitle)}
             </div>
-            <div className={`px-4 py-2 rounded border ${me?.guessedArtist ? 'bg-green-500/20 border-green-500 text-green-400' : 'bg-surface border-gray-700 text-gray-400'}`}>
-              {t('artist')} {me?.guessedArtist ? '✓' : '?'}
+            <div className={`w-full px-4 py-4 rounded-xl border flex flex-col items-center justify-center ${me?.guessedArtist ? 'bg-green-500/10 border-green-500/50' : 'bg-surface border-gray-700'}`}>
+              <span className={`text-xs uppercase tracking-wider mb-2 font-bold ${me?.guessedArtist ? 'text-green-400' : 'text-gray-400'}`}>
+                {t('artist')} {me?.guessedArtist && '✓'}
+              </span>
+              {renderMaskedText(room.track?.artist, room.revealData?.artistIndices, me?.guessedArtist)}
             </div>
           </div>
 
