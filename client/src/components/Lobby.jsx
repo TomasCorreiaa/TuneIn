@@ -97,6 +97,14 @@ export default function Lobby({ room, socket }) {
     socket.emit('updateSettings', { roomId: room.id, settings: { roundDuration: parseInt(e.target.value) } });
   };
 
+  const handleRevealLettersChange = (e) => {
+    socket.emit('updateSettings', { roomId: room.id, settings: { revealLetters: e.target.checked } });
+  };
+
+  const handleShowPlaceholdersChange = (e) => {
+    socket.emit('updateSettings', { roomId: room.id, settings: { showPlaceholders: e.target.checked } });
+  };
+
   return (
     <div className="flex flex-col h-full p-6">
       <div className="text-center mb-6">
@@ -152,7 +160,7 @@ export default function Lobby({ room, socket }) {
                 <input 
                   type="checkbox" 
                   id="autoNextRound"
-                  checked={room.autoNextRound || false}
+                  checked={room.autoNextRound !== false}
                   onChange={handleAutoNextRoundChange}
                   disabled={!isHost}
                   className="w-5 h-5 accent-accent-pink"
@@ -173,6 +181,30 @@ export default function Lobby({ room, socket }) {
                   <option value={20}>20 {t('seconds')}</option>
                   <option value={30}>30 {t('seconds')}</option>
                 </select>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label htmlFor="showPlaceholders" className="text-sm font-medium text-left mr-2">{t('show_placeholders')}</label>
+                <input 
+                  type="checkbox" 
+                  id="showPlaceholders"
+                  checked={room.showPlaceholders !== false}
+                  onChange={handleShowPlaceholdersChange}
+                  disabled={!isHost}
+                  className="w-5 h-5 accent-accent-pink flex-shrink-0"
+                />
+              </div>
+
+              <div className="flex items-center justify-between mt-3">
+                <label htmlFor="revealLetters" className={`text-sm font-medium text-left mr-2 ${room.showPlaceholders === false ? 'text-gray-500' : ''}`}>{t('reveal_letters')}</label>
+                <input 
+                  type="checkbox" 
+                  id="revealLetters"
+                  checked={room.revealLetters !== false && room.showPlaceholders !== false}
+                  onChange={handleRevealLettersChange}
+                  disabled={!isHost || room.showPlaceholders === false}
+                  className="w-5 h-5 accent-accent-pink flex-shrink-0 disabled:opacity-50"
+                />
               </div>
             </div>
             {!isHost && <p className="text-xs text-gray-500 mt-3 text-center">{t('only_host_settings')}</p>}

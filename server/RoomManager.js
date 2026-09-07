@@ -64,8 +64,10 @@ class RoomManager {
       trackOwner: null,
       roundStartTime: null,
       messages: [], // For chat history
-      autoNextRound: false,
+      autoNextRound: true,
       roundDuration: 30,
+      revealLetters: true,
+      showPlaceholders: true,
       currentRound: 0,
       tracksToPlay: []
     });
@@ -140,6 +142,8 @@ class RoomManager {
     
     if (settings.autoNextRound !== undefined) room.autoNextRound = settings.autoNextRound;
     if (settings.roundDuration !== undefined) room.roundDuration = settings.roundDuration;
+    if (settings.revealLetters !== undefined) room.revealLetters = settings.revealLetters;
+    if (settings.showPlaceholders !== undefined) room.showPlaceholders = settings.showPlaceholders;
     
     return true;
   }

@@ -33,8 +33,12 @@ export default function Arena({ room, socket }) {
       return <span className="font-bold tracking-widest text-xl">{text}</span>;
     }
     
+    if (room.showPlaceholders === false) {
+      return <span className="text-gray-500 font-bold text-xl tracking-widest">???</span>;
+    }
+    
     const progress = 1 - (timeLeft / (room.roundDuration || 30));
-    const numToReveal = Math.floor(progress * (revealIndices?.length || 0));
+    const numToReveal = room.revealLetters === false ? 0 : Math.floor(progress * (revealIndices?.length || 0));
     const indicesToReveal = new Set((revealIndices || []).slice(0, numToReveal));
     
     const normalizedText = text.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
