@@ -150,7 +150,7 @@ class RoomManager {
 
   startGame(roomId) {
     const room = this.rooms.get(roomId);
-    if (!room) return false;
+    if (!room || room.state !== 'lobby') return false;
     
     const playersWithTracks = room.players.filter(p => p.trackChoice);
     if (playersWithTracks.length === 0) return false;
@@ -218,7 +218,7 @@ class RoomManager {
 
   nextRound(roomId) {
     const room = this.rooms.get(roomId);
-    if (!room) return false;
+    if (!room || room.state !== 'results') return false;
     
     room.currentRound++;
     if (room.currentRound < room.tracksToPlay.length) {
@@ -307,8 +307,9 @@ class RoomManager {
 
   endGame(roomId) {
     const room = this.rooms.get(roomId);
-    if (!room) return;
+    if (!room || room.state !== 'arena') return false;
     room.state = 'results';
+    return true;
   }
 
   resetForNextRound(roomId) {
@@ -343,4 +344,10 @@ class RoomManager {
   }
 }
 
-module.exports = new RoomManager();
+const defaultInstance = new RoomManager();
+defaultInstance.RoomManager = RoomManager;
+defaultInstance.cleanString = cleanString;
+defaultInstance.cleanForDisplay = cleanForDisplay;
+defaultInstance.levenshtein = levenshtein;
+
+module.exports = defaultInstance;

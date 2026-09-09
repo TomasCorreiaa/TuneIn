@@ -54,6 +54,7 @@ const resources = {
       "round_end_title": "End of Round!",
       "this_was_the_song": "This was the song played.",
       "loading_cover": "Loading cover...",
+      "listen_on_apple_music": "Listen on Apple Music",
       "choice_of": "Choice of {{name}}",
       "leaderboard": "Leaderboard",
       "guessed_all": "Guessed Everything!",
@@ -131,9 +132,10 @@ const resources = {
       
       // Scoreboard
       "round_end_title": "Fim da Rodada!",
-      "this_was_the_song": "Foi esta a música tocada.",
+      "this_was_the_song": "Esta foi a música tocada.",
       "loading_cover": "A carregar capa...",
-      "choice_of": "Escolha do {{name}}",
+      "listen_on_apple_music": "Ouvir no Apple Music",
+      "choice_of": "Escolha de {{name}}",
       "leaderboard": "Placar",
       "guessed_all": "Acertou Tudo!",
       "guessed_title": "Acertou Título!",
@@ -210,8 +212,9 @@ const resources = {
       
       // Scoreboard
       "round_end_title": "¡Fin de la Ronda!",
-      "this_was_the_song": "Esta fue la canción reproducida.",
+      "this_was_the_song": "Esta fue la canción tocada.",
       "loading_cover": "Cargando portada...",
+      "listen_on_apple_music": "Escuchar en Apple Music",
       "choice_of": "Elección de {{name}}",
       "leaderboard": "Marcador",
       "guessed_all": "¡Acertó Todo!",

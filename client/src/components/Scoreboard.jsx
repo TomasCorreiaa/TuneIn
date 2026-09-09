@@ -8,7 +8,9 @@ export default function Scoreboard({ room, socket }) {
   const isHost = room.hostId === socket.id;
   const owner = room.players.find(p => p.id === room.trackOwner);
 
-  const isLastRound = room.currentRound === room.tracksToPlay.length - 1;
+  const isLastRound = room.tracksToPlay && room.tracksToPlay.length > 0
+    ? room.currentRound >= room.tracksToPlay.length - 1
+    : true;
   const [countdown, setCountdown] = useState(room.autoNextRound && !isLastRound ? 5 : null);
   const { t } = useTranslation();
 
@@ -53,15 +55,28 @@ export default function Scoreboard({ room, socket }) {
             )}
 
             {/* Absolute badge for owner */}
-            <div className="absolute -bottom-4 -right-4 bg-accent-pink px-4 py-2 rounded-full shadow-lg font-bold flex items-center space-x-2 border-2 border-background">
-              <img src={owner?.avatar} alt={owner?.nickname} className="w-6 h-6 rounded-full bg-black/50" />
-              <span>{t('choice_of', { name: owner?.nickname })}</span>
-            </div>
+            {owner && (
+              <div className="absolute -bottom-4 -right-4 bg-accent-pink px-4 py-2 rounded-full shadow-lg font-bold flex items-center space-x-2 border-2 border-background">
+                <img src={owner.avatar} alt={owner.nickname} className="w-6 h-6 rounded-full bg-black/50" />
+                <span>{t('choice_of', { name: owner.nickname })}</span>
+              </div>
+            )}
           </div>
 
           <div className="text-center mt-6">
             <h3 className="text-xl font-bold">{room.track?.title}</h3>
             <p className="text-gray-400">{room.track?.artist}</p>
+            {room.track?.trackViewUrl && (
+              <a 
+                href={room.track.trackViewUrl} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="inline-flex items-center space-x-2 mt-4 bg-[#fa243c] hover:bg-[#d9192d] text-white font-bold py-2 px-5 rounded-full text-sm transition-all shadow-lg shadow-red-500/20"
+              >
+                <svg viewBox="0 0 512 512" className="w-4 h-4 fill-current"><path d="M407.2 447.8c-14.8 22-38 46.2-61.5 46.2-12.2 0-20.5-6-35-6s-22.8 6-35 6c-22.5 0-47.5-25.5-61.5-46.2C178.5 393 166.5 332.2 166.5 293c0-59.5 35.8-87.8 63-87.8 22 0 41.5 13.5 54 13.5 11 0 35.5-16.5 61.5-16.5 29.5 0 54 12 70.5 31.8-54 32.5-44 110.8 12.8 133-14 30.5-24 57.5-21 80.8zM315.8 120.2c22.5-27 34.5-58.5 29.8-93.2-31.5 1.5-64.5 21-86.8 48-18 21.8-32.2 54-26.8 88.5 34.5 2.5 63-18 83.8-43.3z"/></svg>
+                <span>{t('listen_on_apple_music')}</span>
+              </a>
+            )}
           </div>
         </div>
 

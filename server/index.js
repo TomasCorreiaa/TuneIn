@@ -17,6 +17,64 @@ const io = new Server(server, {
   }
 });
 
+// Gestão centralizada de timers por sala
+const roundTimeouts = new Map();
+const transitionTimeouts = new Map();
+
+const clearRoomTimers = (roomId) => {
+  if (roundTimeouts.has(roomId)) {
+    clearTimeout(roundTimeouts.get(roomId));
+    roundTimeouts.delete(roomId);
+  }
+  if (transitionTimeouts.has(roomId)) {
+    clearTimeout(transitionTimeouts.get(roomId));
+    transitionTimeouts.delete(roomId);
+  }
+};
+
+const triggerEndRound = (roomId) => {
+  if (roundTimeouts.has(roomId)) {
+    clearTimeout(roundTimeouts.get(roomId));
+    roundTimeouts.delete(roomId);
+  }
+
+  const room = roomManager.getRoom(roomId);
+  if (!room || room.state !== 'arena') return;
+
+  const ended = roomManager.endGame(roomId);
+  if (!ended) return;
+
+  const endRoom = roomManager.getRoom(roomId);
+  if (!endRoom) return;
+  
+  io.to(roomId).emit('gameEnded', endRoom);
+
+  if (endRoom.autoNextRound && endRoom.currentRound < endRoom.tracksToPlay.length - 1) {
+    const timeout = setTimeout(() => {
+      transitionTimeouts.delete(roomId);
+      const isPlaying = roomManager.nextRound(roomId);
+      const newRoom = roomManager.getRoom(roomId);
+      if (newRoom) {
+        io.to(roomId).emit('roomUpdated', newRoom);
+        if (isPlaying) {
+          startRoundTimer(roomId, newRoom.roundDuration);
+        }
+      }
+    }, 5000);
+    transitionTimeouts.set(roomId, timeout);
+  }
+};
+
+const startRoundTimer = (roomId, durationSeconds) => {
+  clearRoomTimers(roomId);
+  
+  const timeout = setTimeout(() => {
+    triggerEndRound(roomId);
+  }, durationSeconds * 1000);
+  
+  roundTimeouts.set(roomId, timeout);
+};
+
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
@@ -50,46 +108,9 @@ io.on('connection', (socket) => {
     }
   });
 
-  const roundTimeouts = new Map();
-
-  const triggerEndRound = (roomId) => {
-    roomManager.endGame(roomId);
-    const endRoom = roomManager.getRoom(roomId);
-    if (!endRoom) return;
-    
-    io.to(roomId).emit('gameEnded', endRoom);
-
-    if (endRoom.autoNextRound && endRoom.currentRound < endRoom.tracksToPlay.length - 1) {
-      setTimeout(() => {
-        const isPlaying = roomManager.nextRound(roomId);
-        const newRoom = roomManager.getRoom(roomId);
-        if (newRoom) {
-          io.to(roomId).emit('roomUpdated', newRoom);
-          if (isPlaying) {
-            startRoundTimer(roomId, newRoom.roundDuration);
-          }
-        }
-      }, 5000);
-    }
-  };
-
-  const startRoundTimer = (roomId, durationSeconds) => {
-    if (roundTimeouts.has(roomId)) clearTimeout(roundTimeouts.get(roomId));
-    
-    const timeout = setTimeout(() => {
-      triggerEndRound(roomId);
-    }, durationSeconds * 1000);
-    
-    roundTimeouts.set(roomId, timeout);
-  };
-
   socket.on('skipRound', ({ roomId }) => {
     const room = roomManager.getRoom(roomId);
     if (room && room.hostId === socket.id && room.state === 'arena') {
-      if (roundTimeouts.has(roomId)) {
-        clearTimeout(roundTimeouts.get(roomId));
-        roundTimeouts.delete(roomId);
-      }
       triggerEndRound(roomId);
     }
   });
@@ -101,6 +122,7 @@ io.on('connection', (socket) => {
 
     if (roomManager.allPlayersReady(roomId)) {
       if (roomManager.startGame(roomId)) {
+        clearRoomTimers(roomId);
         const updatedRoom = roomManager.getRoom(roomId);
         io.to(roomId).emit('gameStarted', updatedRoom);
         
@@ -137,6 +159,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('nextRound', ({ roomId }) => {
+    clearRoomTimers(roomId);
     const isPlaying = roomManager.nextRound(roomId);
     const updatedRoom = roomManager.getRoom(roomId);
     if (updatedRoom) {
@@ -148,6 +171,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('returnToLobby', ({ roomId }) => {
+    clearRoomTimers(roomId);
     roomManager.resetForNextRound(roomId);
     io.to(roomId).emit('roomUpdated', roomManager.getRoom(roomId));
   });
@@ -161,6 +185,8 @@ io.on('connection', (socket) => {
         const updatedRoom = roomManager.getRoom(roomId);
         if (updatedRoom) {
           io.to(roomId).emit('roomUpdated', updatedRoom);
+        } else {
+          clearRoomTimers(roomId);
         }
       }
     }

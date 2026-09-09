@@ -59,7 +59,7 @@ export default function Home() {
 
       <div className="glass-panel p-8 space-y-8">
         <div className="flex flex-col items-center">
-          <img src={avatar} alt="Avatar" className="w-24 h-24 rounded-full bg-surface border-2 border-accent-purple mb-4" />
+          <img src={avatar || undefined} alt="Avatar" className="w-24 h-24 rounded-full bg-surface border-2 border-accent-purple mb-4" />
           <button
             type="button"
             onClick={() => setAvatar(`https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random()}`)}

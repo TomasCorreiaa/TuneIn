@@ -77,7 +77,8 @@ export default function Lobby({ room, socket }) {
           title: selectedTrack.trackName,
           artist: selectedTrack.artistName,
           artworkUrl: selectedTrack.artworkUrl100,
-          previewUrl: selectedTrack.previewUrl
+          previewUrl: selectedTrack.previewUrl,
+          trackViewUrl: selectedTrack.trackViewUrl
         } 
       });
     }
