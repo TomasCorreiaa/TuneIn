@@ -8,7 +8,7 @@ const resources = {
       "home_title": "Guess the music, win points!",
       "home_subtitle": "A real-time multiplayer music trivia game. Create a room, invite friends, pick your song, and see who is the fastest to guess the title and artist.",
       "nickname_label": "Your Nickname",
-      "nickname_placeholder": "Ex: PlayerMusical",
+      "nickname_placeholder": "Ex: MusicalPlayer",
       "choose_avatar": "Choose your Avatar",
       "change_avatar": "Change Avatar",
       "create_room": "Create Room",
@@ -74,12 +74,16 @@ const resources = {
       "back_to_lobby": "Back to Lobby",
       "waiting_for_host_end": "Waiting for Host to end the game...",
       
-      // Shared
+      // Shared & QR
       "room": "Room:",
       "copied": "Link Copied!",
       "loading_room": "Loading room...",
       "error": "Error",
-      "back": "Back"
+      "back": "Back",
+      "qr_code": "QR Code",
+      "scan_to_join": "Scan the QR code to join this room directly from your phone!",
+      "close": "Close",
+      "open_qr": "Open QR Code"
     }
   },
   'pt-PT': {
@@ -154,12 +158,16 @@ const resources = {
       "back_to_lobby": "Voltar ao Lobby",
       "waiting_for_host_end": "A aguardar que o Host termine o jogo...",
       
-      // Shared
+      // Shared & QR
       "room": "Sala:",
       "copied": "Link Copiado!",
       "loading_room": "A carregar sala...",
       "error": "Erro",
-      "back": "Voltar"
+      "back": "Voltar",
+      "qr_code": "Código QR",
+      "scan_to_join": "Aponta a câmara do telemóvel para entrar na sala diretamente!",
+      "close": "Fechar",
+      "open_qr": "Abrir Código QR"
     }
   },
   'es-ES': {
@@ -234,12 +242,100 @@ const resources = {
       "back_to_lobby": "Volver al Lobby",
       "waiting_for_host_end": "Esperando a que el Host termine el juego...",
       
-      // Shared
+      // Shared & QR
       "room": "Sala:",
       "copied": "¡Enlace Copiado!",
       "loading_room": "Cargando sala...",
       "error": "Error",
-      "back": "Volver"
+      "back": "Volver",
+      "qr_code": "Código QR",
+      "scan_to_join": "¡Apunta la cámara de tu móvil para entrar a la sala directamente!",
+      "close": "Cerrar",
+      "open_qr": "Abrir Código QR"
+    }
+  },
+  'fr-FR': {
+    translation: {
+      // Home
+      "home_title": "Devinez la musique, gagnez des points !",
+      "home_subtitle": "Un jeu multijoueur de blind test musical en temps réel. Créez une salle, invitez des amis, choisissez votre musique et voyez qui est le plus rapide à deviner le titre et l'artiste.",
+      "nickname_label": "Votre Pseudo",
+      "nickname_placeholder": "Ex : Mélomane",
+      "choose_avatar": "Choisissez votre Avatar",
+      "change_avatar": "Changer d'Avatar",
+      "create_room": "Créer une Salle",
+      "join_room": "Rejoindre la Salle",
+      "or": "ou",
+      "enter_code": "Entrez le Code",
+      
+      // Lobby
+      "lobby_title": "La Salle d'Attente",
+      "lobby_subtitle": "Choisissez votre musique en secret. Personne ne saura ce que vous avez choisi !",
+      "players_in_room": "Joueurs dans la salle ({{count}})",
+      "host": "(Hôte)",
+      "kick": "Exclure",
+      "room_settings": "Paramètres de la Salle",
+      "auto_next_round": "Manche suivante auto (5s)",
+      "round_duration": "Durée de la manche",
+      "seconds": "secondes",
+      "reveal_letters": "Révéler des lettres au fil du temps",
+      "show_placeholders": "Indices pour le nom et l'artiste",
+      "only_host_settings": "Seul l'Hôte peut modifier les paramètres.",
+      "search_placeholder": "Rechercher un titre ou un artiste...",
+      "searching": "Recherche en cours...",
+      "search_hint": "Faites une recherche pour trouver votre musique secrète.",
+      "need_more_players": "⚠️ Il faut au moins 2 joueurs dans la salle pour commencer !",
+      "im_ready": "Je suis Prêt ! (Choisi : {{track}})",
+      "pick_a_song": "Choisissez une musique...",
+      "music_confirmed": "Musique Confirmée !",
+      "waiting_for_others": "En attente du choix des autres joueurs...",
+      
+      // Arena
+      "playing": "En lecture...",
+      "try_guess": "Essayez de deviner le Titre et l'Artiste !",
+      "guess_hint": "Écrivez dans le chat. Les bonnes réponses rapportent des points selon votre rapidité.",
+      "title": "Titre",
+      "artist": "Artiste",
+      "guess_chat": "Chat de Réponses",
+      "you_picked_this": "Vous avez choisi ce morceau !",
+      "already_guessed_all": "Vous avez déjà tout deviné !",
+      "type_guess": "Tapez votre réponse...",
+      "skip_round": "Passer la manche",
+      
+      // Scoreboard
+      "round_end_title": "Fin de la manche !",
+      "this_was_the_song": "Voici la musique qui était jouée.",
+      "loading_cover": "Chargement de la pochette...",
+      "listen_on_apple_music": "Écouter sur Apple Music",
+      "choice_of": "Choix de {{name}}",
+      "leaderboard": "Classement",
+      "guessed_all": "Tout trouvé !",
+      "guessed_title": "Titre trouvé !",
+      "guessed_artist": "Artiste trouvé !",
+      "next_round_starts_in": "La prochaine manche commence dans...",
+      "see_podium": "Voir le Podium",
+      "next_round": "Manche Suivante",
+      "waiting_for_host_next": "En attente que l'Hôte lance la manche suivante...",
+      "waiting_for_host_podium": "En attente que l'Hôte affiche le podium...",
+      
+      // Podium
+      "final_podium": "Podium Final",
+      "game_ended_podium": "La partie est terminée ! Voici les meilleures oreilles de la salle.",
+      "pts": "pts",
+      "remaining_players": "Autres Joueurs",
+      "back_to_lobby": "Retour au Lobby",
+      "waiting_for_host_end": "En attente que l'Hôte termine la partie...",
+      
+      // Shared & QR
+      "room": "Salle :",
+      "copied": "Lien copié !",
+      "loading_room": "Chargement de la salle...",
+      "error": "Erreur",
+      "back": "Retour",
+      "qr_code": "Code QR",
+      "scan_to_join": "Scannez le code QR pour rejoindre directement la salle depuis votre téléphone !",
+      "close": "Fermer",
+      "open_qr": "Ouvrir le code QR"
     }
   }
 };

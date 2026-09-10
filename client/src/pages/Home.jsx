@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
-import { Play, Users, Music, User, Plus, Loader2 } from 'lucide-react';
+import { Users, Music, User, Plus, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { getSessionToken } from '../utils/session';
 
 export default function Home() {
   const { roomId: urlRoomId } = useParams();
   const navigate = useNavigate();
   const socket = useSocket();
   const { t } = useTranslation();
-  const [nickname, setNickname] = useState('');
+  const [nickname, setNickname] = useState(() => localStorage.getItem('tunein_nickname') || '');
   const [roomCode, setRoomCode] = useState(urlRoomId || '');
-  const [avatar, setAvatar] = useState('');
+  const [avatar, setAvatar] = useState(() => {
+    const saved = localStorage.getItem('tunein_avatar');
+    if (saved) return saved;
+    const generated = `https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random()}`;
+    localStorage.setItem('tunein_avatar', generated);
+    return generated;
+  });
   const [isCreating, setIsCreating] = useState(false);
-
-  useEffect(() => {
-    setAvatar(`https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random()}`);
-  }, []);
 
   const handleCreateRoom = (e) => {
     e.preventDefault();
     if (!nickname.trim() || !socket) return;
     setIsCreating(true);
 
-    socket.emit('createRoom', { nickname, avatar }, (response) => {
+    const cleanNick = nickname.trim();
+    localStorage.setItem('tunein_nickname', cleanNick);
+    localStorage.setItem('tunein_avatar', avatar);
+    const sessionToken = getSessionToken();
+
+    socket.emit('createRoom', { nickname: cleanNick, avatar, sessionToken }, (response) => {
       if (response.success) {
         navigate(`/room/${response.roomId}`, { state: { initialRoom: response.room } });
       }
@@ -36,7 +44,12 @@ export default function Home() {
     e.preventDefault();
     if (!nickname.trim() || !roomCode.trim() || !socket) return;
 
-    navigate(`/room/${roomCode}?nickname=${encodeURIComponent(nickname)}&avatar=${encodeURIComponent(avatar)}`);
+    const cleanNick = nickname.trim();
+    localStorage.setItem('tunein_nickname', cleanNick);
+    localStorage.setItem('tunein_avatar', avatar);
+    const sessionToken = getSessionToken();
+
+    navigate(`/room/${roomCode}?nickname=${encodeURIComponent(cleanNick)}&avatar=${encodeURIComponent(avatar)}&sessionToken=${encodeURIComponent(sessionToken)}`);
   };
 
   return (

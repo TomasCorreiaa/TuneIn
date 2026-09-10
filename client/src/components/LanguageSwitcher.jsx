@@ -5,7 +5,8 @@ import { Globe, ChevronDown } from 'lucide-react';
 const languages = [
   { code: 'en-US', label: 'EN', flag: '🇺🇸' },
   { code: 'pt-PT', label: 'PT', flag: '🇵🇹' },
-  { code: 'es-ES', label: 'ES', flag: '🇪🇸' }
+  { code: 'es-ES', label: 'ES', flag: '🇪🇸' },
+  { code: 'fr-FR', label: 'FR', flag: '🇫🇷' }
 ];
 
 export default function LanguageSwitcher() {

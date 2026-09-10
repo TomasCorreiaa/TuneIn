@@ -4,15 +4,21 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const roomManager = require('./RoomManager');
 
+const defaultOrigins = ['https://tunein.curredev.com', 'http://localhost:5173', 'http://localhost:3000'];
+const envOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map(s => s.trim()).filter(Boolean)
+  : [];
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
+
 const app = express();
 app.use(cors({
-  origin: ['https://tunein.curredev.com', 'http://localhost:5173', 'http://localhost:3000']
+  origin: allowedOrigins
 }));
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['https://tunein.curredev.com', 'http://localhost:5173', 'http://localhost:3000'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST']
   }
 });
@@ -20,6 +26,15 @@ const io = new Server(server, {
 // Gestão centralizada de timers por sala
 const roundTimeouts = new Map();
 const transitionTimeouts = new Map();
+const disconnectTimeouts = new Map();
+
+const clearPlayerDisconnectTimeout = (roomId, identifier) => {
+  const key = `${roomId}_${identifier}`;
+  if (disconnectTimeouts.has(key)) {
+    clearTimeout(disconnectTimeouts.get(key));
+    disconnectTimeouts.delete(key);
+  }
+};
 
 const clearRoomTimers = (roomId) => {
   if (roundTimeouts.has(roomId)) {
@@ -29,6 +44,12 @@ const clearRoomTimers = (roomId) => {
   if (transitionTimeouts.has(roomId)) {
     clearTimeout(transitionTimeouts.get(roomId));
     transitionTimeouts.delete(roomId);
+  }
+  for (const [key, timeout] of disconnectTimeouts.entries()) {
+    if (key.startsWith(`${roomId}_`)) {
+      clearTimeout(timeout);
+      disconnectTimeouts.delete(key);
+    }
   }
 };
 
@@ -75,12 +96,27 @@ const startRoundTimer = (roomId, durationSeconds) => {
   roundTimeouts.set(roomId, timeout);
 };
 
+const sanitizePlayerData = (data) => {
+  if (!data || typeof data !== 'object') return null;
+  const nickname = typeof data.nickname === 'string' ? data.nickname.trim().slice(0, 15) : '';
+  const avatar = typeof data.avatar === 'string' ? data.avatar.slice(0, 500) : '';
+  const sessionToken = typeof data.sessionToken === 'string' ? data.sessionToken.trim().slice(0, 100) : null;
+  if (!nickname) return null;
+  return { nickname, avatar, sessionToken };
+};
+
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
   socket.on('createRoom', (playerData, callback) => {
+    if (typeof callback !== 'function') return;
+    const sanitized = sanitizePlayerData(playerData);
+    if (!sanitized) {
+      return callback({ success: false, error: 'Nickname is required (max 15 characters)' });
+    }
+
     const roomId = roomManager.createRoom(socket.id);
-    const success = roomManager.joinRoom(roomId, { ...playerData, id: socket.id });
+    const success = roomManager.joinRoom(roomId, { ...sanitized, id: socket.id });
     if (success) {
       socket.join(roomId);
       callback({ success: true, roomId, room: roomManager.getRoom(roomId) });
@@ -90,11 +126,26 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinRoom', ({ roomId, playerData }, callback) => {
-    const success = roomManager.joinRoom(roomId, { ...playerData, id: socket.id });
+    if (typeof callback !== 'function') return;
+    if (!roomId || typeof roomId !== 'string') {
+      return callback({ success: false, error: 'Invalid room code' });
+    }
+    const cleanRoomId = roomId.trim().toUpperCase().slice(0, 10);
+    const sanitized = sanitizePlayerData(playerData);
+    if (!sanitized) {
+      return callback({ success: false, error: 'Nickname is required (max 15 characters)' });
+    }
+
+    if (sanitized.sessionToken) {
+      clearPlayerDisconnectTimeout(cleanRoomId, sanitized.sessionToken);
+    }
+    clearPlayerDisconnectTimeout(cleanRoomId, socket.id);
+
+    const success = roomManager.joinRoom(cleanRoomId, { ...sanitized, id: socket.id });
     if (success) {
-      socket.join(roomId);
-      const room = roomManager.getRoom(roomId);
-      io.to(roomId).emit('roomUpdated', room);
+      socket.join(cleanRoomId);
+      const room = roomManager.getRoom(cleanRoomId);
+      io.to(cleanRoomId).emit('roomUpdated', room);
       callback({ success: true, room });
     } else {
       callback({ success: false, error: 'Room not found' });
@@ -102,92 +153,141 @@ io.on('connection', (socket) => {
   });
 
   socket.on('updateSettings', ({ roomId, settings }) => {
-    const success = roomManager.updateSettings(roomId, socket.id, settings);
+    if (!roomId || typeof roomId !== 'string' || !settings || typeof settings !== 'object') return;
+    const cleanRoomId = roomId.trim().toUpperCase();
+    const cleanSettings = {};
+    if (typeof settings.autoNextRound === 'boolean') cleanSettings.autoNextRound = settings.autoNextRound;
+    if (typeof settings.revealLetters === 'boolean') cleanSettings.revealLetters = settings.revealLetters;
+    if (typeof settings.showPlaceholders === 'boolean') cleanSettings.showPlaceholders = settings.showPlaceholders;
+    if (typeof settings.roundDuration === 'number' && Number.isFinite(settings.roundDuration)) {
+      cleanSettings.roundDuration = Math.max(5, Math.min(60, Math.round(settings.roundDuration)));
+    }
+
+    const success = roomManager.updateSettings(cleanRoomId, socket.id, cleanSettings);
     if (success) {
-      io.to(roomId).emit('roomUpdated', roomManager.getRoom(roomId));
+      io.to(cleanRoomId).emit('roomUpdated', roomManager.getRoom(cleanRoomId));
     }
   });
 
   socket.on('skipRound', ({ roomId }) => {
-    const room = roomManager.getRoom(roomId);
+    if (!roomId || typeof roomId !== 'string') return;
+    const cleanRoomId = roomId.trim().toUpperCase();
+    const room = roomManager.getRoom(cleanRoomId);
     if (room && room.hostId === socket.id && room.state === 'arena') {
-      triggerEndRound(roomId);
+      triggerEndRound(cleanRoomId);
     }
   });
 
   socket.on('setReady', ({ roomId, trackUrl }) => {
-    roomManager.setPlayerReady(roomId, socket.id, trackUrl);
-    const room = roomManager.getRoom(roomId);
-    io.to(roomId).emit('roomUpdated', room);
+    if (!roomId || typeof roomId !== 'string' || !trackUrl || typeof trackUrl !== 'object') return;
+    const cleanRoomId = roomId.trim().toUpperCase();
+    const cleanTrack = {
+      title: typeof trackUrl.title === 'string' ? trackUrl.title.slice(0, 200) : '',
+      artist: typeof trackUrl.artist === 'string' ? trackUrl.artist.slice(0, 200) : '',
+      artworkUrl: typeof trackUrl.artworkUrl === 'string' ? trackUrl.artworkUrl.slice(0, 500) : '',
+      previewUrl: typeof trackUrl.previewUrl === 'string' ? trackUrl.previewUrl.slice(0, 500) : '',
+      trackViewUrl: typeof trackUrl.trackViewUrl === 'string' ? trackUrl.trackViewUrl.slice(0, 500) : ''
+    };
 
-    if (roomManager.allPlayersReady(roomId)) {
-      if (roomManager.startGame(roomId)) {
-        clearRoomTimers(roomId);
-        const updatedRoom = roomManager.getRoom(roomId);
-        io.to(roomId).emit('gameStarted', updatedRoom);
-        
-        startRoundTimer(roomId, updatedRoom.roundDuration);
+    roomManager.setPlayerReady(cleanRoomId, socket.id, cleanTrack);
+    const room = roomManager.getRoom(cleanRoomId);
+    if (!room) return;
+    io.to(cleanRoomId).emit('roomUpdated', room);
+
+    if (roomManager.allPlayersReady(cleanRoomId)) {
+      if (roomManager.startGame(cleanRoomId)) {
+        clearRoomTimers(cleanRoomId);
+        const updatedRoom = roomManager.getRoom(cleanRoomId);
+        io.to(cleanRoomId).emit('gameStarted', updatedRoom);
+        startRoundTimer(cleanRoomId, updatedRoom.roundDuration);
       }
     }
   });
 
   socket.on('submitChatGuess', ({ roomId, text }, callback) => {
-    const result = roomManager.handleChatGuess(roomId, socket.id, text);
+    if (!roomId || typeof roomId !== 'string' || typeof text !== 'string') return;
+    const cleanText = text.trim().slice(0, 100);
+    if (!cleanText) return;
+    const cleanRoomId = roomId.trim().toUpperCase();
+
+    const result = roomManager.handleChatGuess(cleanRoomId, socket.id, cleanText);
     if (!result) return;
 
     if (result.closeToPlayer) {
-      // Respond to the user that they are close
-      callback({ close: true });
+      if (typeof callback === 'function') callback({ close: true });
     } else {
-      // Broadcast events/chats
-      callback({ close: false });
+      if (typeof callback === 'function') callback({ close: false });
       if (result.broadcast.length > 0) {
-        io.to(roomId).emit('chatMessages', result.broadcast);
+        io.to(cleanRoomId).emit('chatMessages', result.broadcast);
       }
-      io.to(roomId).emit('roomUpdated', roomManager.getRoom(roomId));
+      io.to(cleanRoomId).emit('roomUpdated', roomManager.getRoom(cleanRoomId));
     }
   });
   
   socket.on('kickPlayer', ({ roomId, targetId }) => {
-    const success = roomManager.kickPlayer(roomId, socket.id, targetId);
+    if (!roomId || typeof roomId !== 'string') return;
+    const cleanRoomId = roomId.trim().toUpperCase();
+    const success = roomManager.kickPlayer(cleanRoomId, socket.id, targetId);
     if (success) {
       io.to(targetId).emit('kicked');
-      
-      const updatedRoom = roomManager.getRoom(roomId);
-      io.to(roomId).emit('roomUpdated', updatedRoom);
+      const updatedRoom = roomManager.getRoom(cleanRoomId);
+      io.to(cleanRoomId).emit('roomUpdated', updatedRoom);
     }
   });
 
   socket.on('nextRound', ({ roomId }) => {
-    clearRoomTimers(roomId);
-    const isPlaying = roomManager.nextRound(roomId);
-    const updatedRoom = roomManager.getRoom(roomId);
+    if (!roomId || typeof roomId !== 'string') return;
+    const cleanRoomId = roomId.trim().toUpperCase();
+    clearRoomTimers(cleanRoomId);
+    const isPlaying = roomManager.nextRound(cleanRoomId);
+    const updatedRoom = roomManager.getRoom(cleanRoomId);
     if (updatedRoom) {
-      io.to(roomId).emit('roomUpdated', updatedRoom);
+      io.to(cleanRoomId).emit('roomUpdated', updatedRoom);
       if (isPlaying) {
-        startRoundTimer(roomId, updatedRoom.roundDuration);
+        startRoundTimer(cleanRoomId, updatedRoom.roundDuration);
       }
     }
   });
 
   socket.on('returnToLobby', ({ roomId }) => {
-    clearRoomTimers(roomId);
-    roomManager.resetForNextRound(roomId);
-    io.to(roomId).emit('roomUpdated', roomManager.getRoom(roomId));
+    if (!roomId || typeof roomId !== 'string') return;
+    const cleanRoomId = roomId.trim().toUpperCase();
+    clearRoomTimers(cleanRoomId);
+    roomManager.resetForNextRound(cleanRoomId);
+    io.to(cleanRoomId).emit('roomUpdated', roomManager.getRoom(cleanRoomId));
   });
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
-    // Find all rooms this user is in (could optimize this)
     for (const [roomId, room] of roomManager.rooms.entries()) {
-      if (room.players.some(p => p.id === socket.id)) {
-        roomManager.leaveRoom(roomId, socket.id);
-        const updatedRoom = roomManager.getRoom(roomId);
-        if (updatedRoom) {
-          io.to(roomId).emit('roomUpdated', updatedRoom);
-        } else {
-          clearRoomTimers(roomId);
-        }
+      const player = room.players.find(p => p.id === socket.id);
+      if (player) {
+        roomManager.markPlayerDisconnected(roomId, socket.id);
+        io.to(roomId).emit('roomUpdated', roomManager.getRoom(roomId));
+
+        // 1-minute disconnect grace period for reconnection
+        const identifier = player.sessionToken || socket.id;
+        const timeoutKey = `${roomId}_${identifier}`;
+        clearPlayerDisconnectTimeout(roomId, identifier);
+
+        const timeout = setTimeout(() => {
+          disconnectTimeouts.delete(timeoutKey);
+          const currentRoom = roomManager.getRoom(roomId);
+          if (currentRoom) {
+            const p = currentRoom.players.find(p => (player.sessionToken && p.sessionToken === player.sessionToken) || p.id === player.id);
+            if (p && p.connected === false) {
+              roomManager.leaveRoom(roomId, p.id);
+              const updatedRoom = roomManager.getRoom(roomId);
+              if (updatedRoom) {
+                io.to(roomId).emit('roomUpdated', updatedRoom);
+              } else {
+                clearRoomTimers(roomId);
+              }
+            }
+          }
+        }, 60000);
+
+        disconnectTimeouts.set(timeoutKey, timeout);
       }
     }
   });

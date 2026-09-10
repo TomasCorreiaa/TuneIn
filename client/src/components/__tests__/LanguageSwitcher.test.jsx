@@ -16,6 +16,7 @@ describe('LanguageSwitcher Component', () => {
     expect(screen.getByText('EN')).toBeInTheDocument();
     expect(screen.getByText('PT')).toBeInTheDocument();
     expect(screen.getByText('ES')).toBeInTheDocument();
+    expect(screen.getByText('FR')).toBeInTheDocument();
   });
 
   it('deve permitir trocar o idioma ao clicar numa opção', () => {

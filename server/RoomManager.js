@@ -1,15 +1,28 @@
+const VERSION_SUFFIX_REGEX = /\s+-\s+(?:.*(?:remaster|radio|edit|live|version|mix|bonus|deluxe|acoustic|mono|stereo|anniversary|instrumental|feat|ft|extended|clean|explicit).*)$/i;
+
 function cleanString(str) {
   if (!str) return '';
   // Remove content inside parenthesis or brackets
   let cleaned = str.replace(/\([^)]*\)/g, '').replace(/\[[^\]]*\]/g, '');
-  // Remove special chars and lowercase
-  return cleaned.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, "");
+  // Remove trailing version/remaster suffixes after hyphen
+  cleaned = cleaned.replace(VERSION_SUFFIX_REGEX, '');
+  // Remove accents/diacritics and lowercase
+  cleaned = cleaned.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+  // Replace hyphens and slashes with space, remove other special characters
+  cleaned = cleaned.replace(/[-/]/g, ' ');
+  cleaned = cleaned.replace(/[^a-z0-9\s]/g, "");
+  // Collapse whitespace
+  return cleaned.replace(/\s+/g, ' ').trim();
 }
 
 function cleanForDisplay(str) {
   if (!str) return '';
-  // Remove content inside parenthesis or brackets, and extra spaces
-  return str.replace(/\([^)]*\)/g, '').replace(/\[[^\]]*\]/g, '').replace(/\s{2,}/g, ' ').trim();
+  // Remove content inside parenthesis or brackets
+  let cleaned = str.replace(/\([^)]*\)/g, '').replace(/\[[^\]]*\]/g, '');
+  // Remove trailing version/remaster suffixes after hyphen
+  cleaned = cleaned.replace(VERSION_SUFFIX_REGEX, '');
+  // Remove extra spaces and trim
+  return cleaned.replace(/\s{2,}/g, ' ').trim();
 }
 
 function levenshtein(a, b) {
@@ -82,19 +95,58 @@ class RoomManager {
     const room = this.rooms.get(roomId);
     if (!room) return false;
     
-    const existingPlayer = room.players.find(p => p.id === player.id);
-    if (!existingPlayer) {
-      room.players.push({
-        ...player,
-        ready: false,
-        score: 0,
-        gamesWon: 0,
-        guessedTitle: false,
-        guessedArtist: false,
-        trackChoice: null
-      });
+    let existingPlayer = null;
+    if (player.sessionToken) {
+      existingPlayer = room.players.find(p => p.sessionToken === player.sessionToken);
     }
+    if (!existingPlayer) {
+      existingPlayer = room.players.find(p => p.id === player.id);
+    }
+
+    if (existingPlayer) {
+      const oldId = existingPlayer.id;
+      existingPlayer.id = player.id;
+      existingPlayer.connected = true;
+      if (player.sessionToken && !existingPlayer.sessionToken) {
+        existingPlayer.sessionToken = player.sessionToken;
+      }
+
+      if (room.hostId === oldId) {
+        room.hostId = player.id;
+      }
+      if (room.trackOwner === oldId) {
+        room.trackOwner = player.id;
+      }
+      if (room.tracksToPlay) {
+        room.tracksToPlay.forEach(t => {
+          if (t.ownerId === oldId) t.ownerId = player.id;
+        });
+      }
+      return true;
+    }
+
+    room.players.push({
+      ...player,
+      connected: true,
+      ready: false,
+      score: 0,
+      gamesWon: 0,
+      guessedTitle: false,
+      guessedArtist: false,
+      trackChoice: null
+    });
     return true;
+  }
+
+  markPlayerDisconnected(roomId, playerId) {
+    const room = this.rooms.get(roomId);
+    if (!room) return null;
+    const player = room.players.find(p => p.id === playerId);
+    if (player) {
+      player.connected = false;
+      return player;
+    }
+    return null;
   }
 
   leaveRoom(roomId, playerId) {
@@ -243,14 +295,37 @@ class RoomManager {
     const cleanGuess = cleanString(text);
     const cleanTitle = cleanString(room.track.title);
     const cleanArtist = cleanString(room.track.artist);
-    
+
+    const stripSpaces = (s) => (s || '').replace(/\s+/g, '');
+    const strippedGuess = stripSpaces(cleanGuess);
+    const strippedTitle = stripSpaces(cleanTitle);
+
     let isClose = false;
     const events = []; // Events to emit back
 
     // Check Artist
     if (!player.guessedArtist) {
-      const dist = levenshtein(cleanGuess, cleanArtist);
-      if (dist === 0) {
+      const artistParts = (room.track.artist || '')
+        .split(/\s+(?:feat\.?|ft\.?|featuring|&|with|x|vs\.?)\s+|,/i)
+        .map(p => cleanString(p))
+        .filter(p => p.length > 0);
+
+      const artistCandidates = Array.from(new Set([cleanArtist, ...artistParts]));
+      let guessedArtist = false;
+
+      for (const candidate of artistCandidates) {
+        const strippedCandidate = stripSpaces(candidate);
+        const dist = levenshtein(cleanGuess, candidate);
+
+        if (dist === 0 || (strippedGuess.length > 2 && strippedGuess === strippedCandidate)) {
+          guessedArtist = true;
+          break;
+        } else if (dist <= 2 && candidate.length > 3) {
+          isClose = true;
+        }
+      }
+
+      if (guessedArtist) {
         player.guessedArtist = true;
         const points = 50 + Math.floor((timeLeft / room.roundDuration) * 25);
         player.score += points;
@@ -260,15 +335,15 @@ class RoomManager {
           text: `${player.nickname} acertou o Artista! (+${points} pts)`,
           correct: true
         });
-      } else if (dist <= 2 && cleanArtist.length > 3) {
-        isClose = true;
       }
     }
 
     // Check Title
     if (!player.guessedTitle) {
       const dist = levenshtein(cleanGuess, cleanTitle);
-      if (dist === 0) {
+      const guessedTitle = dist === 0 || (strippedGuess.length > 2 && strippedGuess === strippedTitle);
+
+      if (guessedTitle) {
         player.guessedTitle = true;
         const points = 100 + Math.floor((timeLeft / room.roundDuration) * 50);
         player.score += points;

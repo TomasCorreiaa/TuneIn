@@ -5,7 +5,9 @@ const { RoomManager, cleanString, cleanForDisplay, levenshtein } = require('../R
 describe('RoomManager - Funções Auxiliares', () => {
   it('cleanString deve remover parênteses, colchetes, acentuação e pontuação', () => {
     assert.equal(cleanString('Song Title (feat. Artist) [Remix]'), 'song title');
-    assert.equal(cleanString('Árvore de Natal & Canção!'), 'arvore de natal  cancao');
+    assert.equal(cleanString('Árvore de Natal & Canção!'), 'arvore de natal cancao');
+    assert.equal(cleanString('Song Title - Remastered 2020'), 'song title');
+    assert.equal(cleanString('Song - Radio Edit'), 'song');
     assert.equal(cleanString(''), '');
     assert.equal(cleanString(null), '');
   });
@@ -13,6 +15,8 @@ describe('RoomManager - Funções Auxiliares', () => {
   it('cleanForDisplay deve remover parênteses e múltiplos espaços mantendo o texto limpo', () => {
     assert.equal(cleanForDisplay('Song (Deluxe Version)'), 'Song');
     assert.equal(cleanForDisplay('Artist  [Live at Wembley]  '), 'Artist');
+    assert.equal(cleanForDisplay('Thunderstruck - Remastered 2020'), 'Thunderstruck');
+    assert.equal(cleanForDisplay('Song - Radio Edit'), 'Song');
     assert.equal(cleanForDisplay(''), '');
     assert.equal(cleanForDisplay(null), '');
   });
@@ -286,5 +290,56 @@ describe('RoomManager - Ciclo de Vida do Jogo', () => {
     assert.equal(room.tracksToPlay.length, 0);
     assert.equal(room.currentRound, 0);
     assert.equal(room.track, null);
+  });
+
+  it('joinRoom com sessionToken deve reconectar jogador preservando pontuação e atualizando socket', () => {
+    const roomId = manager.createRoom('socket-host');
+    manager.joinRoom(roomId, { id: 'socket-p1', sessionToken: 'token-abc', nickname: 'Alice' });
+    manager.joinRoom(roomId, { id: 'socket-p2', sessionToken: 'token-xyz', nickname: 'Bob' });
+
+    const room = manager.getRoom(roomId);
+    room.players[0].score = 250;
+
+    // Simular que o socket-p1 caiu e voltou com socket-p1-new
+    manager.markPlayerDisconnected(roomId, 'socket-p1');
+    assert.equal(room.players[0].connected, false);
+
+    const reconnected = manager.joinRoom(roomId, { id: 'socket-p1-new', sessionToken: 'token-abc' });
+    assert.equal(reconnected, true);
+    assert.equal(room.players.length, 2);
+    assert.equal(room.players[0].id, 'socket-p1-new');
+    assert.equal(room.players[0].connected, true);
+    assert.equal(room.players[0].score, 250);
+  });
+
+  it('handleChatGuess deve aceitar palpites sem carateres especiais, hífens ou apóstrofos e aceitar artistas convidados', () => {
+    const roomId = manager.createRoom('host');
+    manager.joinRoom(roomId, { id: 'host', nickname: 'Host' });
+    manager.joinRoom(roomId, { id: 'p2', nickname: 'Player' });
+
+    manager.setPlayerReady(roomId, 'host', { 
+      title: "Spider-Man: Can't Stop!", 
+      artist: 'The Weeknd feat. Daft Punk' 
+    });
+    manager.setPlayerReady(roomId, 'p2', { title: 'Track 2', artist: 'Artist 2' });
+    manager.startGame(roomId);
+
+    // Garantir que a faixa ativa é a do host
+    const room = manager.getRoom(roomId);
+    room.track = {
+      title: "Spider-Man: Can't Stop!",
+      artist: "The Weeknd feat. Daft Punk"
+    };
+    room.trackOwner = 'host';
+
+    // Palpite do título sem hífens, sem dois pontos, sem apóstrofo
+    const guess1 = manager.handleChatGuess(roomId, 'p2', 'spiderman cant stop');
+    assert.ok(guess1);
+    assert.equal(room.players[1].guessedTitle, true);
+
+    // Palpite do artista adivinhando o artista convidado 'Daft Punk'
+    const guess2 = manager.handleChatGuess(roomId, 'p2', 'daft punk');
+    assert.ok(guess2);
+    assert.equal(room.players[1].guessedArtist, true);
   });
 });
