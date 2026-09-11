@@ -53,19 +53,19 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full max-w-4xl p-6 relative">
-      <div className="absolute top-0 right-6 z-50">
+    <div className="w-full max-w-4xl p-4 sm:p-6 relative">
+      <div className="w-full flex justify-end -mt-4 sm:-mt-6 mb-6 sm:mb-8 z-50">
         <LanguageSwitcher />
       </div>
 
-      <div className="text-center mb-12">
+      <div className="text-center mb-8 sm:mb-12">
         <div className="inline-block relative">
-          <h1 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-accent-orange via-accent-pink to-accent-purple mb-4 animate-gradient-x">
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-accent-orange via-accent-pink to-accent-purple mb-3 sm:mb-4 animate-gradient-x">
             TuneIn
           </h1>
-          <Music className="absolute -top-6 -right-8 text-accent-pink animate-bounce" size={48} />
+          <Music className="absolute -top-3 -right-6 sm:-top-5 sm:-right-8 text-accent-pink animate-bounce w-8 h-8 sm:w-11 sm:h-11 md:w-12 md:h-12" />
         </div>
-        <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4">
           {t('home_title')}
         </h2>
       </div>

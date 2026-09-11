@@ -32,6 +32,10 @@ describe('Lobby Component', () => {
   it('deve permitir que o anfitrião altere as configurações da sala', () => {
     render(<Lobby room={room} socket={mockSocket} />);
 
+    // Abrir o modal de configurações através da roda dentada
+    const settingsBtn = screen.getByRole('button', { name: /Definições da Sala|Room Settings/i });
+    fireEvent.click(settingsBtn);
+
     // Mudar a duração da rodada
     const selectDuration = screen.getByRole('combobox');
     fireEvent.change(selectDuration, { target: { value: '20' } });

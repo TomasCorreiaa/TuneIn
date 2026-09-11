@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { CheckCircle2, Circle, Search, Play, Pause, Volume2, XCircle, Settings, Crown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import SettingsModal from './SettingsModal';
 
-export default function Lobby({ room, socket }) {
+export default function Lobby({ room, socket, onOpenSettings }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState(null);
+  const [isInternalSettingsOpen, setIsInternalSettingsOpen] = useState(false);
   const { t } = useTranslation();
   
   // Audio state
@@ -20,6 +22,8 @@ export default function Lobby({ room, socket }) {
   const me = room.players.find(p => p.id === socket.id);
   const isReady = me?.ready;
   const isHost = room.hostId === socket.id;
+
+  const handleOpenSettings = onOpenSettings || (() => setIsInternalSettingsOpen(true));
 
   useEffect(() => {
     // Cleanup audio on unmount
@@ -42,7 +46,7 @@ export default function Lobby({ room, socket }) {
     try {
       const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(searchQuery)}&limit=15&entity=song`);
       const data = await response.json();
-      setSearchResults(data.results);
+      setSearchResults(data.results || []);
     } catch (err) {
       console.error("Erro ao pesquisar música:", err);
     }
@@ -90,59 +94,56 @@ export default function Lobby({ room, socket }) {
     }
   };
 
-  const handleAutoNextRoundChange = (e) => {
-    socket.emit('updateSettings', { roomId: room.id, settings: { autoNextRound: e.target.checked } });
-  };
-
-  const handleRoundDurationChange = (e) => {
-    socket.emit('updateSettings', { roomId: room.id, settings: { roundDuration: parseInt(e.target.value) } });
-  };
-
-  const handleRevealLettersChange = (e) => {
-    socket.emit('updateSettings', { roomId: room.id, settings: { revealLetters: e.target.checked } });
-  };
-
-  const handleShowPlaceholdersChange = (e) => {
-    socket.emit('updateSettings', { roomId: room.id, settings: { showPlaceholders: e.target.checked } });
-  };
-
   return (
-    <div className="flex flex-col h-full p-6">
-      <div className="text-center mb-6">
-        <h2 className="text-3xl font-bold mb-2">{t('lobby_title')}</h2>
-        <p className="text-gray-400">{t('lobby_subtitle')}</p>
+    <div className="flex flex-col h-full p-3 sm:p-6 overflow-hidden">
+      {/* Header do Lobby */}
+      <div className="text-center mb-3 sm:mb-5 flex-shrink-0">
+        <h2 className="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">{t('lobby_title')}</h2>
+        <p className="text-xs sm:text-sm text-gray-400">{t('lobby_subtitle')}</p>
       </div>
 
-      <div className="flex-grow flex flex-col md:flex-row gap-6 md:gap-8 overflow-y-auto md:overflow-hidden pb-10 md:pb-0">
-        {/* Players List & Settings */}
-        <div className="w-full md:w-1/3 flex flex-col gap-4 md:h-full flex-shrink-0">
-          {/* Players List */}
-          <div className="bg-background/50 rounded-xl p-4 border border-gray-700 flex flex-col flex-grow overflow-y-auto max-h-[250px] md:max-h-none">
-            <h3 className="font-bold mb-4 text-accent-orange flex-shrink-0">{t('players_in_room', { count: room.players.length })}</h3>
-            <div className="space-y-3 flex-grow">
+      <div className="flex-grow flex flex-col md:flex-row gap-3 sm:gap-6 md:gap-8 min-h-0 overflow-hidden">
+        {/* Coluna Esquerda: Lista de Jogadores e Acesso a Definições */}
+        <div className="w-full md:w-1/3 flex flex-col flex-shrink-0 md:h-full min-h-0">
+          <div className="bg-background/50 rounded-xl p-3 sm:p-4 border border-gray-700 flex flex-col max-h-28 sm:max-h-36 md:max-h-none md:flex-grow overflow-hidden">
+            <div className="flex items-center justify-between mb-2 sm:mb-4 flex-shrink-0">
+              <h3 className="font-bold text-accent-orange text-sm sm:text-base">
+                {t('players_in_room', { count: room.players.length })}
+              </h3>
+              <button
+                onClick={handleOpenSettings}
+                className="p-1.5 rounded-lg bg-surface hover:bg-surface/80 text-gray-300 hover:text-accent-purple border border-gray-700 hover:border-accent-purple/50 transition-colors flex items-center justify-center"
+                title={t('room_settings')}
+                aria-label={t('room_settings')}
+              >
+                <Settings size={16} />
+              </button>
+            </div>
+
+            <div className="space-y-2 sm:space-y-3 overflow-y-auto flex-grow pr-1">
               {room.players.map(player => (
                 <div key={player.id} className="flex items-center justify-between p-2 rounded-lg bg-surface">
-                  <div className="flex items-center space-x-3">
-                    <img src={player.avatar} alt={player.nickname} className="w-10 h-10 rounded-full bg-black/50" />
-                    <span className="font-medium flex items-center gap-2 truncate max-w-[120px]">
-                      {player.nickname}
-                      {room.hostId === player.id && <span className="text-xs text-yellow-500">{t('host')}</span>}
+                  <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                    <img src={player.avatar} alt={player.nickname} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/50 flex-shrink-0" />
+                    <span className="font-medium flex items-center gap-1.5 truncate max-w-[110px] sm:max-w-[140px] text-xs sm:text-sm">
+                      <span className="truncate">{player.nickname}</span>
+                      {room.hostId === player.id && <span className="text-[10px] sm:text-xs text-yellow-500 font-bold flex-shrink-0">{t('host')}</span>}
                       {player.gamesWon > 0 && (
-                        <span className="text-yellow-400 flex items-center text-xs ml-1" title={`${player.gamesWon}`}>
-                          <Crown size={14} className="mr-1" />
+                        <span className="text-yellow-400 flex items-center text-[10px] sm:text-xs ml-1 flex-shrink-0" title={`${player.gamesWon}`}>
+                          <Crown size={12} className="mr-0.5" />
                           {player.gamesWon}
                         </span>
                       )}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 flex-shrink-0">
                     {player.ready ? 
-                      <CheckCircle2 className="text-green-500" size={20} /> : 
-                      <Circle className="text-gray-500 animate-pulse" size={20} />
+                      <CheckCircle2 className="text-green-500" size={18} /> : 
+                      <Circle className="text-gray-500 animate-pulse" size={18} />
                     }
                     {isHost && player.id !== socket.id && (
-                      <button onClick={() => handleKick(player.id)} className="text-red-500 hover:text-red-400" title={t('kick')}>
-                        <XCircle size={20} />
+                      <button onClick={() => handleKick(player.id)} className="text-red-500 hover:text-red-400 p-0.5" title={t('kick')}>
+                        <XCircle size={18} />
                       </button>
                     )}
                   </div>
@@ -150,119 +151,60 @@ export default function Lobby({ room, socket }) {
               ))}
             </div>
           </div>
-
-          {/* Settings */}
-          <div className="bg-background/50 rounded-xl p-4 border border-gray-700 flex flex-col flex-shrink-0">
-            <h3 className="font-bold mb-3 flex items-center gap-2 text-accent-purple"><Settings size={18} /> {t('room_settings')}</h3>
-            
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label htmlFor="autoNextRound" className="text-sm font-medium">{t('auto_next_round')}</label>
-                <input 
-                  type="checkbox" 
-                  id="autoNextRound"
-                  checked={room.autoNextRound !== false}
-                  onChange={handleAutoNextRoundChange}
-                  disabled={!isHost}
-                  className="w-5 h-5 accent-accent-pink"
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <label htmlFor="roundDuration" className="text-sm font-medium">{t('round_duration')}</label>
-                <select 
-                  id="roundDuration"
-                  value={room.roundDuration || 30}
-                  onChange={handleRoundDurationChange}
-                  disabled={!isHost}
-                  className="bg-surface border border-gray-600 rounded p-1 text-sm focus:outline-none focus:border-accent-pink disabled:opacity-50"
-                >
-                  <option value={5}>5 {t('seconds')}</option>
-                  <option value={10}>10 {t('seconds')}</option>
-                  <option value={20}>20 {t('seconds')}</option>
-                  <option value={30}>30 {t('seconds')}</option>
-                </select>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <label htmlFor="showPlaceholders" className="text-sm font-medium text-left mr-2">{t('show_placeholders')}</label>
-                <input 
-                  type="checkbox" 
-                  id="showPlaceholders"
-                  checked={room.showPlaceholders !== false}
-                  onChange={handleShowPlaceholdersChange}
-                  disabled={!isHost}
-                  className="w-5 h-5 accent-accent-pink flex-shrink-0"
-                />
-              </div>
-
-              <div className="flex items-center justify-between mt-3">
-                <label htmlFor="revealLetters" className={`text-sm font-medium text-left mr-2 ${room.showPlaceholders === false ? 'text-gray-500' : ''}`}>{t('reveal_letters')}</label>
-                <input 
-                  type="checkbox" 
-                  id="revealLetters"
-                  checked={room.revealLetters !== false && room.showPlaceholders !== false}
-                  onChange={handleRevealLettersChange}
-                  disabled={!isHost || room.showPlaceholders === false}
-                  className="w-5 h-5 accent-accent-pink flex-shrink-0 disabled:opacity-50"
-                />
-              </div>
-            </div>
-            {!isHost && <p className="text-xs text-gray-500 mt-3 text-center">{t('only_host_settings')}</p>}
-          </div>
         </div>
 
-        {/* Music Selection */}
-        <div className="w-full md:w-2/3 flex flex-col md:h-full md:overflow-hidden min-h-[400px]">
+        {/* Coluna Direita: Seleção de Música com Botão Fixo no Fundo */}
+        <div className="w-full md:w-2/3 flex flex-col flex-1 min-h-0 md:h-full overflow-hidden">
           {!isReady ? (
-            <div className="flex flex-col md:h-full">
-              <form onSubmit={handleSearch} className="mb-4 flex space-x-2">
+            <div className="flex flex-col h-full min-h-0">
+              {/* Barra de Pesquisa */}
+              <form onSubmit={handleSearch} className="mb-2 sm:mb-3 flex space-x-2 flex-shrink-0">
                 <input 
                   type="text" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('search_placeholder')}
-                  className="flex-grow bg-background border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink transition-all"
+                  className="flex-grow bg-background border border-gray-600 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink transition-all"
                 />
                 <button 
                   type="submit"
                   disabled={isSearching}
-                  className="bg-surface border border-accent-pink hover:bg-accent-pink/20 text-white font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50"
+                  className="bg-surface border border-accent-pink hover:bg-accent-pink/20 text-white font-bold py-2 sm:py-2.5 px-4 sm:px-5 rounded-lg transition-all disabled:opacity-50 flex-shrink-0"
                 >
-                  <Search size={20} />
+                  <Search size={18} />
                 </button>
               </form>
               
               {/* Controlo de Volume Global */}
-              <div className="flex items-center space-x-3 mb-4 bg-surface p-3 rounded-lg border border-gray-700">
-                <Volume2 size={20} className="text-gray-400" />
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3 bg-surface p-2 sm:p-2.5 rounded-lg border border-gray-700 flex-shrink-0">
+                <Volume2 size={18} className="text-gray-400 flex-shrink-0" />
                 <input 
                   type="range" 
                   min="0" max="1" step="0.05" 
                   value={volume} 
                   onChange={(e) => setVolume(parseFloat(e.target.value))}
-                  className="w-full accent-accent-pink"
+                  className="w-full accent-accent-pink cursor-pointer"
                 />
               </div>
 
-              {/* Resultados */}
-              <div className="flex-grow overflow-y-auto space-y-2 mb-4 pr-2">
+              {/* Lista de Resultados com scroll interno */}
+              <div className="flex-1 min-h-0 overflow-y-auto space-y-2 mb-2 pr-1 sm:pr-2">
                 {isSearching ? (
-                  <div className="text-center text-gray-400 mt-10 animate-pulse">{t('searching')}</div>
+                  <div className="text-center text-gray-400 mt-6 sm:mt-10 animate-pulse text-sm">{t('searching')}</div>
                 ) : searchResults.length > 0 ? (
                   searchResults.map(track => (
                     <div 
                       key={track.trackId} 
-                      className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer
+                      className={`flex items-center justify-between p-2.5 rounded-lg border transition-all cursor-pointer
                         ${selectedTrack?.trackId === track.trackId ? 'bg-accent-pink/20 border-accent-pink' : 'bg-background border-gray-700 hover:border-gray-500'}
                       `}
                       onClick={() => handleSelectTrack(track)}
                     >
-                      <div className="flex items-center space-x-4 overflow-hidden">
-                        <img src={track.artworkUrl100} alt={track.trackName} className="w-12 h-12 rounded object-cover" />
+                      <div className="flex items-center space-x-3 overflow-hidden">
+                        <img src={track.artworkUrl100} alt={track.trackName} className="w-10 h-10 rounded object-cover flex-shrink-0" />
                         <div className="truncate">
-                          <p className="font-bold truncate text-white">{track.trackName}</p>
-                          <p className="text-sm text-gray-400 truncate">{track.artistName}</p>
+                          <p className="font-bold truncate text-white text-xs sm:text-sm">{track.trackName}</p>
+                          <p className="text-[11px] sm:text-xs text-gray-400 truncate">{track.artistName}</p>
                         </div>
                       </div>
                       
@@ -271,46 +213,60 @@ export default function Lobby({ room, socket }) {
                           e.stopPropagation();
                           togglePreview(track.previewUrl);
                         }}
-                        className={`p-2 rounded-full border transition-all
+                        className={`p-2 rounded-full border transition-all flex-shrink-0 ml-2
                           ${playingPreview === track.previewUrl ? 'bg-accent-orange border-accent-orange text-white' : 'bg-surface border-gray-600 hover:border-accent-orange text-gray-300'}
                         `}
                       >
-                        {playingPreview === track.previewUrl ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+                        {playingPreview === track.previewUrl ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
                       </button>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center text-gray-500 mt-10">
+                  <div className="text-center text-gray-500 mt-6 sm:mt-10 text-xs sm:text-sm px-4">
                     {t('search_hint')}
                   </div>
                 )}
               </div>
               
-              {room.players.length < 2 && (
-                <div className="text-yellow-500 text-sm font-bold text-center mt-2 mb-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded">
-                  {t('need_more_players')}
-                </div>
-              )}
-              
-              <button
-                onClick={handleReady}
-                disabled={!selectedTrack || room.players.length < 2}
-                className="w-full flex-shrink-0 bg-gradient-to-r from-accent-pink to-accent-purple hover:from-pink-500 hover:to-purple-500 text-white font-bold py-4 rounded-lg neon-glow transition-all disabled:opacity-50"
-              >
-                {selectedTrack ? t('im_ready', { track: selectedTrack.trackName }) : t('pick_a_song')}
-              </button>
+              {/* Secção Inferior com Botão Sempre Visível */}
+              <div className="flex-shrink-0 pt-2 border-t border-gray-800/80">
+                {room.players.length < 2 && (
+                  <div className="text-yellow-500 text-xs font-bold text-center mb-2 p-1.5 bg-yellow-500/10 border border-yellow-500/20 rounded">
+                    {t('need_more_players')}
+                  </div>
+                )}
+                
+                <button
+                  onClick={handleReady}
+                  disabled={!selectedTrack || room.players.length < 2}
+                  className="w-full bg-gradient-to-r from-accent-pink to-accent-purple hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 sm:py-3.5 px-4 rounded-lg neon-glow transition-all disabled:opacity-50 text-sm sm:text-base truncate"
+                >
+                  {selectedTrack ? t('im_ready', { track: selectedTrack.trackName }) : t('pick_a_song')}
+                </button>
+              </div>
             </div>
           ) : (
             <div className="text-center space-y-4 m-auto">
-              <div className="inline-block p-4 rounded-full bg-green-500/20 border border-green-500 mb-4">
-                <CheckCircle2 className="text-green-500 w-16 h-16" />
+              <div className="inline-block p-4 rounded-full bg-green-500/20 border border-green-500 mb-2 sm:mb-4">
+                <CheckCircle2 className="text-green-500 w-12 h-12 sm:w-16 sm:h-16" />
               </div>
-              <h3 className="text-2xl font-bold">{t('music_confirmed')}</h3>
-              <p className="text-gray-400">{t('waiting_for_others')}</p>
+              <h3 className="text-xl sm:text-2xl font-bold">{t('music_confirmed')}</h3>
+              <p className="text-xs sm:text-sm text-gray-400">{t('waiting_for_others')}</p>
             </div>
           )}
         </div>
       </div>
+
+      {/* Modal interno de suporte para uso isolado */}
+      {!onOpenSettings && (
+        <SettingsModal
+          isOpen={isInternalSettingsOpen}
+          onClose={() => setIsInternalSettingsOpen(false)}
+          room={room}
+          socket={socket}
+          isHost={isHost}
+        />
+      )}
     </div>
   );
 }

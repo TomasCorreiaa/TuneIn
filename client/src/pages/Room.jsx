@@ -7,6 +7,7 @@ import Scoreboard from '../components/Scoreboard';
 import Podium from '../components/Podium';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import QrCodeModal from '../components/QrCodeModal';
+import SettingsModal from '../components/SettingsModal';
 import { Copy, QrCode } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getSessionToken } from '../utils/session';
@@ -21,6 +22,7 @@ export default function Room() {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
   const [isQrOpen, setIsQrOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -122,16 +124,16 @@ export default function Room() {
   }
 
   return (
-    <div className="w-full max-w-4xl h-[90vh] flex flex-col pt-6 relative">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent-orange to-accent-pink cursor-pointer" onClick={() => navigate('/')}>TuneIn</h1>
+    <div className="w-full max-w-4xl h-[92dvh] sm:h-[90vh] flex flex-col pt-2 sm:pt-6 relative">
+      <div className="flex justify-between items-center mb-3 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent-orange to-accent-pink cursor-pointer" onClick={() => navigate('/')}>TuneIn</h1>
         
-        <div className="flex items-center space-x-2 sm:space-x-3 z-50">
+        <div className="flex items-center space-x-1.5 sm:space-x-3 z-50">
           <LanguageSwitcher />
           
           <button 
             onClick={() => setIsQrOpen(true)}
-            className="bg-surface hover:bg-surface/80 p-2.5 rounded-lg border border-gray-700 flex items-center justify-center transition-colors text-gray-300 hover:text-accent-pink hover:border-accent-pink/50"
+            className="bg-surface hover:bg-surface/80 p-2 sm:p-2.5 rounded-lg border border-gray-700 flex items-center justify-center transition-colors text-gray-300 hover:text-accent-pink hover:border-accent-pink/50"
             title={t('open_qr')}
             aria-label={t('qr_code')}
           >
@@ -140,11 +142,11 @@ export default function Room() {
 
           <button 
             onClick={handleCopyUrl}
-            className="bg-surface hover:bg-surface/80 px-3 sm:px-4 py-2 rounded-lg border border-gray-700 flex items-center space-x-2 transition-colors relative"
+            className="bg-surface hover:bg-surface/80 px-2.5 sm:px-4 py-2 rounded-lg border border-gray-700 flex items-center space-x-1 sm:space-x-2 transition-colors relative"
             title="Copiar link da sala"
           >
             <span className="text-sm text-gray-400 hidden sm:inline">{t('room')}</span>
-            <span className="font-mono font-bold tracking-widest text-accent-orange">{roomId}</span>
+            <span className="font-mono font-bold tracking-widest text-accent-orange text-sm sm:text-base">{roomId}</span>
             <Copy size={16} className="text-gray-400 ml-1 sm:ml-2" />
             {copied && (
               <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-accent-pink text-white text-xs px-2 py-1 rounded whitespace-nowrap">
@@ -156,7 +158,7 @@ export default function Room() {
       </div>
 
       <div className="flex-grow glass-panel overflow-hidden relative flex flex-col">
-        {room.state === 'lobby' && <Lobby room={room} socket={socket} />}
+        {room.state === 'lobby' && <Lobby room={room} socket={socket} onOpenSettings={() => setIsSettingsOpen(true)} />}
         {room.state === 'arena' && <Arena room={room} socket={socket} />}
         {room.state === 'results' && <Scoreboard room={room} socket={socket} />}
         {room.state === 'podium' && <Podium room={room} socket={socket} />}
@@ -166,6 +168,14 @@ export default function Room() {
         isOpen={isQrOpen} 
         onClose={() => setIsQrOpen(false)} 
         roomId={roomId} 
+      />
+
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        room={room} 
+        socket={socket} 
+        isHost={room.hostId === socket?.id}
       />
     </div>
   );
