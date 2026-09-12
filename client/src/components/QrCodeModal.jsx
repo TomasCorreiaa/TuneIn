@@ -74,7 +74,7 @@ export default function QrCodeModal({ isOpen, onClose, roomId }) {
             ) : (
               <>
                 <Copy size={14} />
-                <span>Copiar Link</span>
+                <span>{t('copy_link')}</span>
               </>
             )}
           </button>

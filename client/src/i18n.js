@@ -36,6 +36,9 @@ const resources = {
       "need_more_players": "⚠️ Need at least 2 players in the room to start!",
       "im_ready": "I'm Ready! (Picked: {{track}})",
       "pick_a_song": "Pick a song...",
+      "start_game_timer": "Start Game (30s)",
+      "game_starting_in": "Game starts in {{seconds}}s...",
+      "cancel_timer": "Cancel",
       "music_confirmed": "Song Confirmed!",
       "waiting_for_others": "Waiting for the other players to choose...",
       
@@ -50,6 +53,11 @@ const resources = {
       "already_guessed_all": "You already guessed everything!",
       "type_guess": "Type your guess...",
       "skip_round": "Skip Round",
+      "close_guess": "Your guess \"{{text}}\" is very close!",
+      "player_guessed_artist": "{{nickname}} guessed the Artist! (+{{points}} pts)",
+      "player_guessed_title": "{{nickname}} guessed the Title! (+{{points}} pts)",
+      "owner_bonus_artist": "{{nickname}} got +{{points}} pts because their artist was guessed!",
+      "owner_bonus_title": "{{nickname}} got +{{points}} pts because their song was guessed!",
       
       // Scoreboard
       "round_end_title": "End of Round!",
@@ -78,6 +86,7 @@ const resources = {
       // Shared & QR
       "room": "Room:",
       "copied": "Link Copied!",
+      "copy_link": "Copy Link",
       "loading_room": "Loading room...",
       "error": "Error",
       "back": "Back",
@@ -121,6 +130,9 @@ const resources = {
       "need_more_players": "⚠️ Precisas de pelo menos 2 jogadores na sala para começar!",
       "im_ready": "Estou Pronto! (Escolhi: {{track}})",
       "pick_a_song": "Escolhe uma música...",
+      "start_game_timer": "Começar Jogo (30s)",
+      "game_starting_in": "O jogo começa em {{seconds}}s...",
+      "cancel_timer": "Cancelar",
       "music_confirmed": "Música Confirmada!",
       "waiting_for_others": "A aguardar que os restantes jogadores escolham...",
       
@@ -135,6 +147,11 @@ const resources = {
       "already_guessed_all": "Já acertaste tudo!",
       "type_guess": "Escreve o teu palpite...",
       "skip_round": "Revelar Música",
+      "close_guess": "A tua tentativa \"{{text}}\" está muito perto!",
+      "player_guessed_artist": "{{nickname}} acertou o Artista! (+{{points}} pts)",
+      "player_guessed_title": "{{nickname}} acertou o Título! (+{{points}} pts)",
+      "owner_bonus_artist": "{{nickname}} recebeu +{{points}} pts pela sua escolha de artista!",
+      "owner_bonus_title": "{{nickname}} recebeu +{{points}} pts pela sua escolha de música!",
       
       // Scoreboard
       "round_end_title": "Fim da Rodada!",
@@ -163,6 +180,7 @@ const resources = {
       // Shared & QR
       "room": "Sala:",
       "copied": "Link Copiado!",
+      "copy_link": "Copiar Link",
       "loading_room": "A carregar sala...",
       "error": "Erro",
       "back": "Voltar",
@@ -206,6 +224,9 @@ const resources = {
       "need_more_players": "⚠️ ¡Necesitas al menos 2 jugadores en la sala para empezar!",
       "im_ready": "¡Estoy Listo! (Elegí: {{track}})",
       "pick_a_song": "Elige una canción...",
+      "start_game_timer": "Comenzar Juego (30s)",
+      "game_starting_in": "El juego comienza en {{seconds}}s...",
+      "cancel_timer": "Cancelar",
       "music_confirmed": "¡Música Confirmada!",
       "waiting_for_others": "Esperando a que los demás jugadores elijan...",
       
@@ -220,6 +241,11 @@ const resources = {
       "already_guessed_all": "¡Ya acertaste todo!",
       "type_guess": "Escribe tu suposición...",
       "skip_round": "Saltar Ronda",
+      "close_guess": "¡Tu intento \"{{text}}\" está muy cerca!",
+      "player_guessed_artist": "¡{{nickname}} acertó el Artista! (+{{points}} pts)",
+      "player_guessed_title": "¡{{nickname}} acertó el Título! (+{{points}} pts)",
+      "owner_bonus_artist": "¡{{nickname}} recibió +{{points}} pts por su artista!",
+      "owner_bonus_title": "¡{{nickname}} recibió +{{points}} pts por su canción!",
       
       // Scoreboard
       "round_end_title": "¡Fin de la Ronda!",
@@ -248,6 +274,7 @@ const resources = {
       // Shared & QR
       "room": "Sala:",
       "copied": "¡Enlace Copiado!",
+      "copy_link": "Copiar Enlace",
       "loading_room": "Cargando sala...",
       "error": "Error",
       "back": "Volver",
@@ -291,6 +318,9 @@ const resources = {
       "need_more_players": "⚠️ Il faut au moins 2 joueurs dans la salle pour commencer !",
       "im_ready": "Je suis Prêt ! (Choisi : {{track}})",
       "pick_a_song": "Choisissez une musique...",
+      "start_game_timer": "Lancer la partie (30s)",
+      "game_starting_in": "La partie commence dans {{seconds}}s...",
+      "cancel_timer": "Annuler",
       "music_confirmed": "Musique Confirmée !",
       "waiting_for_others": "En attente du choix des autres joueurs...",
       
@@ -305,6 +335,11 @@ const resources = {
       "already_guessed_all": "Vous avez déjà tout deviné !",
       "type_guess": "Tapez votre réponse...",
       "skip_round": "Passer la manche",
+      "close_guess": "Votre réponse \"{{text}}\" est très proche !",
+      "player_guessed_artist": "{{nickname}} a trouvé l'Artiste ! (+{{points}} pts)",
+      "player_guessed_title": "{{nickname}} a trouvé le Titre ! (+{{points}} pts)",
+      "owner_bonus_artist": "{{nickname}} a reçu +{{points}} pts pour son artiste !",
+      "owner_bonus_title": "{{nickname}} a reçu +{{points}} pts pour son morceau !",
       
       // Scoreboard
       "round_end_title": "Fin de la manche !",
@@ -333,6 +368,7 @@ const resources = {
       // Shared & QR
       "room": "Salle :",
       "copied": "Lien copié !",
+      "copy_link": "Copier le lien",
       "loading_room": "Chargement de la salle...",
       "error": "Erreur",
       "back": "Retour",

@@ -23,6 +23,10 @@ export default function Lobby({ room, socket, onOpenSettings }) {
   const isReady = me?.ready;
   const isHost = room.hostId === socket.id;
 
+  const readyCount = room.players.filter(p => p.ready).length;
+  const allReady = room.players.length >= 2 && room.players.every(p => p.ready);
+  const canStartTimer = isHost && readyCount >= 2 && !allReady && (room.countdown === null || room.countdown === undefined);
+
   const handleOpenSettings = onOpenSettings || (() => setIsInternalSettingsOpen(true));
 
   useEffect(() => {
@@ -102,6 +106,26 @@ export default function Lobby({ room, socket, onOpenSettings }) {
         <p className="text-xs sm:text-sm text-gray-400">{t('lobby_subtitle')}</p>
       </div>
 
+      {/* Banner de Contagem Regressiva para Início de Jogo */}
+      {room.countdown !== null && room.countdown !== undefined && (
+        <div className="mb-3 bg-gradient-to-r from-accent-orange/20 to-accent-pink/20 border border-accent-pink/50 rounded-xl p-3 flex items-center justify-between animate-pulse flex-shrink-0">
+          <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-accent-pink text-white font-mono text-sm font-bold flex-shrink-0">
+              {room.countdown}
+            </span>
+            <span>{t('game_starting_in', { seconds: room.countdown })}</span>
+          </div>
+          {isHost && (
+            <button
+              onClick={() => socket.emit('cancelCountdown', { roomId: room.id })}
+              className="bg-surface/80 hover:bg-surface text-gray-300 hover:text-white text-xs px-2.5 py-1 rounded border border-gray-600 transition-colors flex-shrink-0"
+            >
+              {t('cancel_timer')}
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="flex-grow flex flex-col md:flex-row gap-3 sm:gap-6 md:gap-8 min-h-0 overflow-hidden">
         {/* Coluna Esquerda: Lista de Jogadores e Acesso a Definições */}
         <div className="w-full md:w-1/3 flex flex-col flex-shrink-0 md:h-full min-h-0">
@@ -151,6 +175,15 @@ export default function Lobby({ room, socket, onOpenSettings }) {
               ))}
             </div>
           </div>
+          {canStartTimer && !isReady && (
+            <button
+              onClick={() => socket.emit('startCountdown', { roomId: room.id })}
+              className="mt-2.5 w-full bg-gradient-to-r from-accent-orange to-accent-pink hover:opacity-90 text-white font-bold py-2 px-3 rounded-lg text-xs sm:text-sm neon-glow transition-all flex items-center justify-center gap-2 flex-shrink-0"
+            >
+              <Play size={14} fill="currentColor" />
+              {t('start_game_timer')}
+            </button>
+          )}
         </div>
 
         {/* Coluna Direita: Seleção de Música com Botão Fixo no Fundo */}
@@ -252,6 +285,15 @@ export default function Lobby({ room, socket, onOpenSettings }) {
               </div>
               <h3 className="text-xl sm:text-2xl font-bold">{t('music_confirmed')}</h3>
               <p className="text-xs sm:text-sm text-gray-400">{t('waiting_for_others')}</p>
+              {canStartTimer && (
+                <button
+                  onClick={() => socket.emit('startCountdown', { roomId: room.id })}
+                  className="mt-3 inline-flex items-center gap-2 bg-gradient-to-r from-accent-orange to-accent-pink hover:opacity-90 text-white font-bold py-2.5 px-5 rounded-lg text-sm neon-glow transition-all"
+                >
+                  <Play size={16} fill="currentColor" />
+                  {t('start_game_timer')}
+                </button>
+              )}
             </div>
           )}
         </div>

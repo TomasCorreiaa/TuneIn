@@ -72,6 +72,7 @@ class RoomManager {
       id: roomId,
       hostId,
       players: [],
+      countdown: null,
       state: 'lobby',
       track: null,
       trackOwner: null,
@@ -188,6 +189,13 @@ class RoomManager {
     return room.players.every(p => p.ready);
   }
 
+  canStartCountdown(roomId) {
+    const room = this.rooms.get(roomId);
+    if (!room || room.state !== 'lobby') return false;
+    const readyCount = room.players.filter(p => p.ready).length;
+    return readyCount >= 2 && !this.allPlayersReady(roomId);
+  }
+
   updateSettings(roomId, hostId, settings) {
     const room = this.rooms.get(roomId);
     if (!room || room.hostId !== hostId) return false;
@@ -235,7 +243,7 @@ class RoomManager {
       const indices = [];
       const normalizedStr = str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
       for (let i = 0; i < normalizedStr.length; i++) {
-        if (/[a-zA-Z]/.test(normalizedStr[i])) {
+        if (/[a-zA-Z0-9]/.test(normalizedStr[i])) {
           indices.push(i);
         }
       }
@@ -332,9 +340,25 @@ class RoomManager {
         
         events.push({
           type: 'system',
+          key: 'player_guessed_artist',
+          params: { nickname: player.nickname, points },
           text: `${player.nickname} acertou o Artista! (+${points} pts)`,
           correct: true
         });
+
+        // Bónus para quem escolheu a música
+        const owner = room.players.find(p => p.id === room.trackOwner);
+        if (owner) {
+          const ownerPoints = 25;
+          owner.score += ownerPoints;
+          events.push({
+            type: 'system',
+            key: 'owner_bonus_artist',
+            params: { nickname: owner.nickname, points: ownerPoints },
+            text: `${owner.nickname} recebeu +${ownerPoints} pts pela sua escolha de artista!`,
+            correct: true
+          });
+        }
       }
     }
 
@@ -350,9 +374,25 @@ class RoomManager {
         
         events.push({
           type: 'system',
+          key: 'player_guessed_title',
+          params: { nickname: player.nickname, points },
           text: `${player.nickname} acertou o Título! (+${points} pts)`,
           correct: true
         });
+
+        // Bónus para quem escolheu a música
+        const owner = room.players.find(p => p.id === room.trackOwner);
+        if (owner) {
+          const ownerPoints = 50;
+          owner.score += ownerPoints;
+          events.push({
+            type: 'system',
+            key: 'owner_bonus_title',
+            params: { nickname: owner.nickname, points: ownerPoints },
+            text: `${owner.nickname} recebeu +${ownerPoints} pts pela sua escolha de música!`,
+            correct: true
+          });
+        }
       } else if (dist <= 2 && cleanTitle.length > 3) {
         isClose = true;
       }
@@ -403,6 +443,7 @@ class RoomManager {
     }
     
     room.state = 'lobby';
+    room.countdown = null;
     room.track = null;
     room.trackOwner = null;
     room.roundStartTime = null;

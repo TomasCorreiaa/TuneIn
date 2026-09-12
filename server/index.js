@@ -27,12 +27,24 @@ const io = new Server(server, {
 const roundTimeouts = new Map();
 const transitionTimeouts = new Map();
 const disconnectTimeouts = new Map();
+const countdownIntervals = new Map();
 
 const clearPlayerDisconnectTimeout = (roomId, identifier) => {
   const key = `${roomId}_${identifier}`;
   if (disconnectTimeouts.has(key)) {
     clearTimeout(disconnectTimeouts.get(key));
     disconnectTimeouts.delete(key);
+  }
+};
+
+const clearCountdown = (roomId) => {
+  if (countdownIntervals.has(roomId)) {
+    clearInterval(countdownIntervals.get(roomId));
+    countdownIntervals.delete(roomId);
+  }
+  const room = roomManager.getRoom(roomId);
+  if (room && room.countdown !== null) {
+    room.countdown = null;
   }
 };
 
@@ -44,6 +56,10 @@ const clearRoomTimers = (roomId) => {
   if (transitionTimeouts.has(roomId)) {
     clearTimeout(transitionTimeouts.get(roomId));
     transitionTimeouts.delete(roomId);
+  }
+  if (countdownIntervals.has(roomId)) {
+    clearInterval(countdownIntervals.get(roomId));
+    countdownIntervals.delete(roomId);
   }
   for (const [key, timeout] of disconnectTimeouts.entries()) {
     if (key.startsWith(`${roomId}_`)) {
@@ -195,6 +211,7 @@ io.on('connection', (socket) => {
     io.to(cleanRoomId).emit('roomUpdated', room);
 
     if (roomManager.allPlayersReady(cleanRoomId)) {
+      clearCountdown(cleanRoomId);
       if (roomManager.startGame(cleanRoomId)) {
         clearRoomTimers(cleanRoomId);
         const updatedRoom = roomManager.getRoom(cleanRoomId);
@@ -202,6 +219,68 @@ io.on('connection', (socket) => {
         startRoundTimer(cleanRoomId, updatedRoom.roundDuration);
       }
     }
+  });
+
+  socket.on('startCountdown', ({ roomId }) => {
+    if (!roomId || typeof roomId !== 'string') return;
+    const cleanRoomId = roomId.trim().toUpperCase();
+    const room = roomManager.getRoom(cleanRoomId);
+    if (!room || room.hostId !== socket.id || !roomManager.canStartCountdown(cleanRoomId)) return;
+
+    clearCountdown(cleanRoomId);
+    room.countdown = 30;
+    io.to(cleanRoomId).emit('roomUpdated', room);
+
+    const interval = setInterval(() => {
+      const currentRoom = roomManager.getRoom(cleanRoomId);
+      if (!currentRoom || currentRoom.state !== 'lobby') {
+        clearCountdown(cleanRoomId);
+        return;
+      }
+
+      const readyCount = currentRoom.players.filter(p => p.ready).length;
+      if (readyCount < 2) {
+        clearCountdown(cleanRoomId);
+        io.to(cleanRoomId).emit('roomUpdated', currentRoom);
+        return;
+      }
+
+      if (roomManager.allPlayersReady(cleanRoomId)) {
+        clearCountdown(cleanRoomId);
+        if (roomManager.startGame(cleanRoomId)) {
+          clearRoomTimers(cleanRoomId);
+          const updatedRoom = roomManager.getRoom(cleanRoomId);
+          io.to(cleanRoomId).emit('gameStarted', updatedRoom);
+          startRoundTimer(cleanRoomId, updatedRoom.roundDuration);
+        }
+        return;
+      }
+
+      currentRoom.countdown -= 1;
+      if (currentRoom.countdown <= 0) {
+        clearCountdown(cleanRoomId);
+        if (roomManager.startGame(cleanRoomId)) {
+          clearRoomTimers(cleanRoomId);
+          const updatedRoom = roomManager.getRoom(cleanRoomId);
+          io.to(cleanRoomId).emit('gameStarted', updatedRoom);
+          startRoundTimer(cleanRoomId, updatedRoom.roundDuration);
+        }
+      } else {
+        io.to(cleanRoomId).emit('roomUpdated', currentRoom);
+      }
+    }, 1000);
+
+    countdownIntervals.set(cleanRoomId, interval);
+  });
+
+  socket.on('cancelCountdown', ({ roomId }) => {
+    if (!roomId || typeof roomId !== 'string') return;
+    const cleanRoomId = roomId.trim().toUpperCase();
+    const room = roomManager.getRoom(cleanRoomId);
+    if (!room || room.hostId !== socket.id) return;
+
+    clearCountdown(cleanRoomId);
+    io.to(cleanRoomId).emit('roomUpdated', room);
   });
 
   socket.on('submitChatGuess', ({ roomId, text }, callback) => {
@@ -231,6 +310,9 @@ io.on('connection', (socket) => {
     if (success) {
       io.to(targetId).emit('kicked');
       const updatedRoom = roomManager.getRoom(cleanRoomId);
+      if (updatedRoom && updatedRoom.countdown !== null && updatedRoom.players.filter(p => p.ready).length < 2) {
+        clearCountdown(cleanRoomId);
+      }
       io.to(cleanRoomId).emit('roomUpdated', updatedRoom);
     }
   });

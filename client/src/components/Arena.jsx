@@ -5,8 +5,10 @@ import { useTranslation } from 'react-i18next';
 export default function Arena({ room, socket }) {
   const [timeLeft, setTimeLeft] = useState(room.roundDuration || 30);
   const [guessInput, setGuessInput] = useState('');
+  const [lastGuess, setLastGuess] = useState('');
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
   const audioRef = useRef(null);
   const { t } = useTranslation();
 
@@ -27,6 +29,13 @@ export default function Arena({ room, socket }) {
   const playingPlayers = room.players.filter(p => p.id !== room.trackOwner);
   const allGuessed = playingPlayers.length > 0 && playingPlayers.every(p => p.guessedTitle && p.guessedArtist);
   
+  // Auto-focus no campo de palpites ao iniciar a rodada
+  useEffect(() => {
+    if (!isOwner && !(me?.guessedTitle && me?.guessedArtist)) {
+      inputRef.current?.focus();
+    }
+  }, [room.currentRound, room.track?.title, isOwner, me?.guessedTitle, me?.guessedArtist]);
+
   const renderMaskedText = (text, revealIndices, isGuessed) => {
     if (!text) return null;
     if (isGuessed || isOwner) {
@@ -46,8 +55,8 @@ export default function Arena({ room, socket }) {
     return (
       <div className="flex flex-wrap justify-center gap-x-1 gap-y-2">
         {text.split('').map((char, index) => {
-          const isAlpha = /[a-zA-Z]/.test(normalizedText[index]);
-          if (!isAlpha) {
+          const isAlphanumeric = /[a-zA-Z0-9]/.test(normalizedText[index]);
+          if (!isAlphanumeric) {
             return char === ' ' ? <span key={index} className="w-3"></span> : <span key={index} className="font-bold text-xl">{char}</span>;
           }
           if (indicesToReveal.has(index)) {
@@ -90,17 +99,25 @@ export default function Arena({ room, socket }) {
     return () => socket.off('chatMessages', handleChat);
   }, [socket]);
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowUp' && lastGuess) {
+      e.preventDefault();
+      setGuessInput(lastGuess);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!guessInput.trim() || isOwner) return;
 
     const text = guessInput.trim();
+    setLastGuess(text);
     setGuessInput('');
 
     socket.emit('submitChatGuess', { roomId: room.id, text }, (response) => {
-      if (response.close) {
-        // Se esteve perto, adiciona só localmente para o utilizador
-        setMessages(prev => [...prev, { type: 'system', text: `A tua tentativa "${text}" está muito perto!`, correct: false }]);
+      if (response && response.close) {
+        // Se esteve perto, adiciona só localmente para o utilizador com i18n
+        setMessages(prev => [...prev, { type: 'system', text: t('close_guess', { text }), correct: false }]);
         setTimeout(() => {
           messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
         }, 100);
@@ -181,7 +198,7 @@ export default function Arena({ room, socket }) {
                 : 'bg-background border border-gray-700 text-gray-300'
               }`}>
                 {msg.type === 'chat' && <span className="font-bold text-accent-orange">{msg.sender}: </span>}
-                <span>{msg.text}</span>
+                <span>{msg.key ? t(msg.key, msg.params) : msg.text}</span>
               </div>
             ))}
             <div ref={messagesEndRef} />
@@ -189,9 +206,12 @@ export default function Arena({ room, socket }) {
 
           <form onSubmit={handleSubmit} className="p-3 bg-background border-t border-gray-700 flex gap-2">
             <input
+              ref={inputRef}
               type="text"
               value={guessInput}
               onChange={(e) => setGuessInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              autoFocus
               disabled={isOwner || (me?.guessedTitle && me?.guessedArtist)}
               placeholder={isOwner ? t('you_picked_this') : (me?.guessedTitle && me?.guessedArtist ? t('already_guessed_all') : t('type_guess'))}
               className="flex-grow bg-surface border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent-pink disabled:opacity-50"

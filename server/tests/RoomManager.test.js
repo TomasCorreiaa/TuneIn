@@ -218,15 +218,18 @@ describe('RoomManager - Ciclo de Vida do Jogo', () => {
     // Acertar o artista
     const correctArtistRes = manager.handleChatGuess(roomId, guesser.id, targetArtist);
     assert.equal(correctArtistRes.closeToPlayer, false);
-    assert.equal(correctArtistRes.broadcast.length, 1);
+    // Deve emitir mensagem de acerto do adivinhador e mensagem de bónus do dono da faixa
+    assert.equal(correctArtistRes.broadcast.length, 2);
     assert.equal(guesser.guessedArtist, true);
     assert.ok(guesser.score > 0);
+    assert.equal(owner.score, 25); // Dono recebe 25 pts pelo artista
 
     // Acertar o título
     const targetTitle = room.track.title;
     const correctTitleRes = manager.handleChatGuess(roomId, guesser.id, targetTitle);
     assert.equal(correctTitleRes.closeToPlayer, false);
     assert.equal(guesser.guessedTitle, true);
+    assert.equal(owner.score, 75); // 25 + 50 pts pelo título
 
     // Palpite normal após acertar tudo é tratado como chat
     const chatRes = manager.handleChatGuess(roomId, guesser.id, 'bom jogo!');
@@ -341,5 +344,44 @@ describe('RoomManager - Ciclo de Vida do Jogo', () => {
     const guess2 = manager.handleChatGuess(roomId, 'p2', 'daft punk');
     assert.ok(guess2);
     assert.equal(room.players[1].guessedArtist, true);
+  });
+
+  it('canStartCountdown deve retornar true apenas se pelo menos 2 jogadores estiverem prontos mas nem todos', () => {
+    const cRoomId = manager.createRoom('host');
+    manager.joinRoom(cRoomId, { id: 'host', nickname: 'Host' });
+    manager.joinRoom(cRoomId, { id: 'p2', nickname: 'P2' });
+    manager.joinRoom(cRoomId, { id: 'p3', nickname: 'P3' });
+
+    assert.equal(manager.canStartCountdown(cRoomId), false);
+
+    // 1 jogador pronto
+    manager.setPlayerReady(cRoomId, 'host', { title: 'T1', artist: 'A1' });
+    assert.equal(manager.canStartCountdown(cRoomId), false);
+
+    // 2 jogadores prontos de 3
+    manager.setPlayerReady(cRoomId, 'p2', { title: 'T2', artist: 'A2' });
+    assert.equal(manager.canStartCountdown(cRoomId), true);
+
+    // 3 jogadores prontos de 3 (todos prontos -> canStartCountdown deve ser false)
+    manager.setPlayerReady(cRoomId, 'p3', { title: 'T3', artist: 'A3' });
+    assert.equal(manager.canStartCountdown(cRoomId), false);
+  });
+
+  it('setupRound deve incluir dígitos nos índices elegíveis para revelação progressiva', () => {
+    const numRoomId = manager.createRoom('host');
+    manager.joinRoom(numRoomId, { id: 'host', nickname: 'Host' });
+    manager.joinRoom(numRoomId, { id: 'p2', nickname: 'P2' });
+
+    manager.setPlayerReady(numRoomId, 'host', { title: '1999', artist: 'Prince' });
+    manager.setPlayerReady(numRoomId, 'p2', { title: '24K Magic', artist: 'Bruno Mars' });
+    manager.startGame(numRoomId);
+
+    const room = manager.getRoom(numRoomId);
+    assert.ok(room.revealData);
+    // Para '1999', deve gerar índices elegíveis para os 4 dígitos
+    const activeTrack = room.track;
+    if (activeTrack.title === '1999') {
+      assert.ok(room.revealData.titleIndices.length > 0);
+    }
   });
 });

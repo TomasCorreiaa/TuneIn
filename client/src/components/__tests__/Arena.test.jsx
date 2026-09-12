@@ -96,4 +96,42 @@ describe('Arena Component', () => {
     fireEvent.click(skipBtn);
     expect(mockSocket.emit).toHaveBeenCalledWith('skipRound', { roomId: 'ROOM_ARENA' });
   });
+
+  it('deve restaurar a última tentativa ao pressionar ArrowUp', () => {
+    render(<Arena room={room} socket={mockSocket} />);
+
+    const input = screen.getByRole('textbox');
+    const submitBtn = screen.getByRole('button', { name: '' });
+
+    // Enviar primeira tentativa
+    fireEvent.change(input, { target: { value: 'MinhaTentativa' } });
+    fireEvent.click(submitBtn);
+    expect(input.value).toBe('');
+
+    // Pressionar ArrowUp deve preencher o input com o último palpite
+    fireEvent.keyDown(input, { key: 'ArrowUp' });
+    expect(input.value).toBe('MinhaTentativa');
+  });
+
+  it('deve mascarar dígitos de músicas numéricas com placeholder', () => {
+    const numRoom = {
+      ...room,
+      track: {
+        title: '1999',
+        artist: 'Prince',
+      },
+      revealData: {
+        titleIndices: [],
+        artistIndices: [],
+      },
+    };
+
+    render(<Arena room={numRoom} socket={mockSocket} />);
+
+    // Os 4 dígitos de 1999 não devem estar visíveis de imediato como texto '1999'
+    expect(screen.queryByText('1999')).not.toBeInTheDocument();
+    // Devem existir 4 placeholders '_'
+    const placeholders = screen.getAllByText('_');
+    expect(placeholders.length).toBeGreaterThanOrEqual(4);
+  });
 });

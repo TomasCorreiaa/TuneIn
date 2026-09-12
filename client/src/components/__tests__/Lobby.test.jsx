@@ -73,4 +73,41 @@ describe('Lobby Component', () => {
     const readyBtn = screen.getByRole('button', { name: /Escolhe uma música|Pick a song/i });
     expect(readyBtn).toBeDisabled();
   });
+
+  it('deve exibir botão para o host iniciar contagem se pelo menos 2 jogadores tiverem escolhido música', () => {
+    const roomWithReady = {
+      ...room,
+      players: [
+        { id: 'host-id', nickname: 'Alice', avatar: 'a1.png', ready: true },
+        { id: 'guest-id', nickname: 'Bob', avatar: 'a2.png', ready: true },
+        { id: 'guest-2', nickname: 'Charlie', avatar: 'a3.png', ready: false },
+      ],
+    };
+
+    render(<Lobby room={roomWithReady} socket={mockSocket} />);
+
+    const startTimerBtn = screen.getByRole('button', { name: /Começar Jogo \(30s\)|Start Game \(30s\)/i });
+    expect(startTimerBtn).toBeInTheDocument();
+
+    fireEvent.click(startTimerBtn);
+    expect(mockSocket.emit).toHaveBeenCalledWith('startCountdown', { roomId: 'ROOM_LOBBY' });
+  });
+
+  it('deve exibir o banner de contagem regressiva quando countdown estiver ativo', () => {
+    const countdownRoom = {
+      ...room,
+      countdown: 25,
+    };
+
+    render(<Lobby room={countdownRoom} socket={mockSocket} />);
+
+    expect(screen.getByText('25')).toBeInTheDocument();
+    expect(screen.getByText(/O jogo começa em 25s|Game starts in 25s/i)).toBeInTheDocument();
+
+    const cancelBtn = screen.getByRole('button', { name: /Cancelar|Cancel/i });
+    expect(cancelBtn).toBeInTheDocument();
+
+    fireEvent.click(cancelBtn);
+    expect(mockSocket.emit).toHaveBeenCalledWith('cancelCountdown', { roomId: 'ROOM_LOBBY' });
+  });
 });
