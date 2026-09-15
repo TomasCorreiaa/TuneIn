@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import LanguageSwitcher from '../LanguageSwitcher';
 
@@ -12,11 +12,12 @@ describe('LanguageSwitcher Component', () => {
     // Clicar para abrir
     fireEvent.click(button);
 
-    // Deve mostrar as opções de idiomas
-    expect(screen.getByText('EN')).toBeInTheDocument();
-    expect(screen.getByText('PT')).toBeInTheDocument();
-    expect(screen.getByText('ES')).toBeInTheDocument();
-    expect(screen.getByText('FR')).toBeInTheDocument();
+    // Deve mostrar as opções de idiomas no dropdown
+    const dropdown = screen.getByTestId('language-dropdown');
+    expect(within(dropdown).getByText('EN')).toBeInTheDocument();
+    expect(within(dropdown).getByText('PT')).toBeInTheDocument();
+    expect(within(dropdown).getByText('ES')).toBeInTheDocument();
+    expect(within(dropdown).getByText('FR')).toBeInTheDocument();
   });
 
   it('deve permitir trocar o idioma ao clicar numa opção', () => {
@@ -25,7 +26,8 @@ describe('LanguageSwitcher Component', () => {
     const button = screen.getByRole('button');
     fireEvent.click(button);
 
-    const ptOption = screen.getByText('PT');
+    const dropdown = screen.getByTestId('language-dropdown');
+    const ptOption = within(dropdown).getByText('PT');
     fireEvent.click(ptOption);
 
     // Deve salvar no localStorage

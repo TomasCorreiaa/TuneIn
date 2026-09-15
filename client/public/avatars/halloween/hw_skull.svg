@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="hw_sk_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3C1642"/>
+      <stop offset="100%" stop-color="#140617"/>
+    </radialGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#hw_sk_bg)"/>
+  <ellipse cx="60" cy="52" rx="26" ry="24" fill="#F8F9FA"/>
+  <rect x="44" y="66" width="32" height="16" rx="4" fill="#F8F9FA"/>
+  <circle cx="60" cy="35" r="4" fill="#FF5D8F"/>
+  <circle cx="48" cy="38" r="3.5" fill="#48CAE4"/>
+  <circle cx="72" cy="38" r="3.5" fill="#48CAE4"/>
+  <ellipse cx="49" cy="54" rx="7.5" ry="8.5" fill="#1C1924"/>
+  <ellipse cx="71" cy="54" rx="7.5" ry="8.5" fill="#1C1924"/>
+  <circle cx="49" cy="54" r="3" fill="#FFD166"/>
+  <circle cx="71" cy="54" r="3" fill="#FFD166"/>
+  <path d="M58,64 L60,61 L62,64 L60,67 Z" fill="#1C1924"/>
+  <line x1="48" y1="74" x2="72" y2="74" stroke="#1C1924" stroke-width="2"/>
+  <line x1="52" y1="70" x2="52" y2="78" stroke="#1C1924" stroke-width="2"/>
+  <line x1="60" y1="70" x2="60" y2="78" stroke="#1C1924" stroke-width="2"/>
+  <line x1="68" y1="70" x2="68" y2="78" stroke="#1C1924" stroke-width="2"/>
+</svg>

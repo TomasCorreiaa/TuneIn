@@ -33,12 +33,12 @@ export default function SettingsModal({ isOpen, onClose, room, socket, isHost })
       onClick={onClose}
     >
       <div 
-        className="glass-panel w-full max-w-md p-6 relative flex flex-col border border-gray-700 bg-surface/95 shadow-2xl rounded-2xl text-left"
+        className="glass-panel w-full max-w-md p-6 relative flex flex-col border border-theme-border bg-surface/95 shadow-2xl rounded-2xl text-left"
         onClick={(e) => e.stopPropagation()}
       >
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10"
+          className="absolute top-4 right-4 text-theme-secondary hover:text-theme-text transition-colors p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10"
           aria-label={t('close')}
         >
           <X size={20} />
@@ -49,19 +49,19 @@ export default function SettingsModal({ isOpen, onClose, room, socket, isHost })
             <Settings size={22} />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white">
+            <h3 className="text-xl font-bold text-theme-text">
               {t('room_settings')}
             </h3>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-theme-secondary">
               {t('settings_host_hint', 'Ajusta as regras da sala para todos os jogadores.')}
             </p>
           </div>
         </div>
 
-        <div className="space-y-4 bg-background/60 p-4 rounded-xl border border-gray-700/80 mb-6">
+        <div className="space-y-4 bg-background/60 p-4 rounded-xl border border-theme-border mb-6">
           {/* Avanço Automático */}
           <div className="flex items-center justify-between gap-4">
-            <label htmlFor="modalAutoNextRound" className="text-sm font-medium text-gray-200 cursor-pointer select-none">
+            <label htmlFor="modalAutoNextRound" className="text-sm font-medium text-theme-text cursor-pointer select-none">
               {t('auto_next_round')}
             </label>
             <input 
@@ -74,11 +74,11 @@ export default function SettingsModal({ isOpen, onClose, room, socket, isHost })
             />
           </div>
 
-          <div className="border-t border-gray-700/50"></div>
+          <div className="border-t border-theme-border"></div>
 
           {/* Duração da Ronda */}
           <div className="flex items-center justify-between gap-4">
-            <label htmlFor="modalRoundDuration" className="text-sm font-medium text-gray-200 cursor-pointer select-none">
+            <label htmlFor="modalRoundDuration" className="text-sm font-medium text-theme-text cursor-pointer select-none">
               {t('round_duration')}
             </label>
             <select 
@@ -86,7 +86,7 @@ export default function SettingsModal({ isOpen, onClose, room, socket, isHost })
               value={room.roundDuration || 30}
               onChange={handleRoundDurationChange}
               disabled={!isHost}
-              className="bg-surface border border-gray-600 rounded-lg px-3 py-1.5 text-sm font-medium text-white focus:outline-none focus:border-accent-pink disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-surface border border-theme-border rounded-lg px-3 py-1.5 text-sm font-medium text-theme-text focus:outline-none focus:border-accent-pink disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value={5}>5 {t('seconds')}</option>
               <option value={10}>10 {t('seconds')}</option>
@@ -95,11 +95,11 @@ export default function SettingsModal({ isOpen, onClose, room, socket, isHost })
             </select>
           </div>
 
-          <div className="border-t border-gray-700/50"></div>
+          <div className="border-t border-theme-border"></div>
 
           {/* Placeholders */}
           <div className="flex items-center justify-between gap-4">
-            <label htmlFor="modalShowPlaceholders" className="text-sm font-medium text-gray-200 cursor-pointer select-none">
+            <label htmlFor="modalShowPlaceholders" className="text-sm font-medium text-theme-text cursor-pointer select-none">
               {t('show_placeholders')}
             </label>
             <input 
@@ -112,13 +112,13 @@ export default function SettingsModal({ isOpen, onClose, room, socket, isHost })
             />
           </div>
 
-          <div className="border-t border-gray-700/50"></div>
+          <div className="border-t border-theme-border"></div>
 
           {/* Revelar Letras */}
           <div className="flex items-center justify-between gap-4">
             <label 
               htmlFor="modalRevealLetters" 
-              className={`text-sm font-medium cursor-pointer select-none ${room.showPlaceholders === false ? 'text-gray-500' : 'text-gray-200'}`}
+              className={`text-sm font-medium cursor-pointer select-none ${room.showPlaceholders === false ? 'text-theme-muted' : 'text-theme-text'}`}
             >
               {t('reveal_letters')}
             </label>
@@ -141,7 +141,7 @@ export default function SettingsModal({ isOpen, onClose, room, socket, isHost })
 
         <button
           onClick={onClose}
-          className="w-full bg-surface hover:bg-gray-700 text-white font-medium py-2.5 rounded-lg transition-colors border border-gray-600 text-sm"
+          className="w-full bg-surface hover:bg-black/5 dark:hover:bg-gray-700 text-theme-text font-medium py-2.5 rounded-lg transition-colors border border-theme-border text-sm"
         >
           {t('close')}
         </button>

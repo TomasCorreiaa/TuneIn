@@ -27,12 +27,12 @@ export default function QrCodeModal({ isOpen, onClose, roomId }) {
       onClick={onClose}
     >
       <div 
-        className="glass-panel w-full max-w-sm p-6 relative flex flex-col items-center text-center border border-gray-700 bg-surface/95 shadow-2xl"
+        className="glass-panel w-full max-w-sm p-6 relative flex flex-col items-center text-center border border-theme-border bg-surface/95 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10"
+          className="absolute top-4 right-4 text-theme-secondary hover:text-theme-text transition-colors p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10"
           aria-label={t('close')}
         >
           <X size={20} />
@@ -42,7 +42,7 @@ export default function QrCodeModal({ isOpen, onClose, roomId }) {
           {t('qr_code')}
         </h3>
         
-        <p className="text-xs text-gray-400 mb-4 px-2">
+        <p className="text-xs text-theme-secondary mb-4 px-2">
           {t('scan_to_join')}
         </p>
 
@@ -56,15 +56,15 @@ export default function QrCodeModal({ isOpen, onClose, roomId }) {
           />
         </div>
 
-        <div className="w-full flex items-center justify-between bg-background/80 px-4 py-2 rounded-lg border border-gray-700 mb-4">
+        <div className="w-full flex items-center justify-between bg-background/80 px-4 py-2 rounded-lg border border-theme-border mb-4">
           <div className="text-left">
-            <span className="text-xs text-gray-500 block uppercase font-medium">{t('room')}</span>
+            <span className="text-xs text-theme-muted block uppercase font-medium">{t('room')}</span>
             <span className="font-mono font-bold tracking-widest text-accent-orange text-lg">{roomId}</span>
           </div>
 
           <button
             onClick={handleCopy}
-            className="flex items-center space-x-1 bg-surface hover:bg-gray-700 text-xs px-3 py-2 rounded-md border border-gray-600 transition-all text-gray-200"
+            className="flex items-center space-x-1 bg-surface hover:bg-black/5 dark:hover:bg-gray-700 text-xs px-3 py-2 rounded-md border border-theme-border transition-all text-theme-text"
           >
             {copied ? (
               <>
@@ -82,7 +82,7 @@ export default function QrCodeModal({ isOpen, onClose, roomId }) {
 
         <button
           onClick={onClose}
-          className="w-full bg-surface hover:bg-gray-700 text-white font-medium py-2 rounded-lg transition-colors border border-gray-600 text-sm"
+          className="w-full bg-surface hover:bg-black/5 dark:hover:bg-gray-700 text-theme-text font-medium py-2 rounded-lg transition-colors border border-theme-border text-sm"
         >
           {t('close')}
         </button>

@@ -115,7 +115,7 @@ const startRoundTimer = (roomId, durationSeconds) => {
 const sanitizePlayerData = (data) => {
   if (!data || typeof data !== 'object') return null;
   const nickname = typeof data.nickname === 'string' ? data.nickname.trim().slice(0, 15) : '';
-  const avatar = typeof data.avatar === 'string' ? data.avatar.slice(0, 500) : '';
+  const avatar = typeof data.avatar === 'string' ? data.avatar.slice(0, 20000) : '';
   const sessionToken = typeof data.sessionToken === 'string' ? data.sessionToken.trim().slice(0, 100) : null;
   if (!nickname) return null;
   return { nickname, avatar, sessionToken };

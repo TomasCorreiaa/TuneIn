@@ -142,31 +142,31 @@ export default function Arena({ room, socket }) {
           <div className="mb-6 relative flex items-center justify-center w-64 h-64 rounded-full border-4 border-accent-purple neon-glow">
             <div className="absolute inset-0 bg-accent-purple/20 rounded-full animate-ping"></div>
             <div className="z-10 text-center">
-              <span className="text-6xl font-bold font-mono">{timeLeft}</span>
-              <p className="text-sm text-gray-400 mt-2">{t('playing')}</p>
+              <span className="text-6xl font-bold font-mono text-theme-text">{timeLeft}</span>
+              <p className="text-sm text-theme-secondary mt-2">{t('playing')}</p>
             </div>
           </div>
 
-          <h3 className="text-xl mb-2 font-bold text-center">{t('try_guess')}</h3>
-          <p className="text-gray-400 text-center mb-4">{t('guess_hint')}</p>
+          <h3 className="text-xl mb-2 font-bold text-center text-theme-text">{t('try_guess')}</h3>
+          <p className="text-theme-secondary text-center mb-4">{t('guess_hint')}</p>
           
           <div className="flex flex-col w-full max-w-md gap-4 mb-6">
-            <div className={`w-full px-4 py-4 rounded-xl border flex flex-col items-center justify-center ${me?.guessedTitle ? 'bg-green-500/10 border-green-500/50' : 'bg-surface border-gray-700'}`}>
-              <span className={`text-xs uppercase tracking-wider mb-2 font-bold ${me?.guessedTitle ? 'text-green-400' : 'text-gray-400'}`}>
+            <div className={`w-full px-4 py-4 rounded-xl border flex flex-col items-center justify-center ${me?.guessedTitle ? 'bg-green-500/10 border-green-500/50' : 'bg-surface border-theme-border'}`}>
+              <span className={`text-xs uppercase tracking-wider mb-2 font-bold ${me?.guessedTitle ? 'text-green-500 dark:text-green-400' : 'text-theme-secondary'}`}>
                 {t('title')} {me?.guessedTitle && '✓'}
               </span>
               {renderMaskedText(room.track?.title, room.revealData?.titleIndices, me?.guessedTitle)}
             </div>
-            <div className={`w-full px-4 py-4 rounded-xl border flex flex-col items-center justify-center ${me?.guessedArtist ? 'bg-green-500/10 border-green-500/50' : 'bg-surface border-gray-700'}`}>
-              <span className={`text-xs uppercase tracking-wider mb-2 font-bold ${me?.guessedArtist ? 'text-green-400' : 'text-gray-400'}`}>
+            <div className={`w-full px-4 py-4 rounded-xl border flex flex-col items-center justify-center ${me?.guessedArtist ? 'bg-green-500/10 border-green-500/50' : 'bg-surface border-theme-border'}`}>
+              <span className={`text-xs uppercase tracking-wider mb-2 font-bold ${me?.guessedArtist ? 'text-green-500 dark:text-green-400' : 'text-theme-secondary'}`}>
                 {t('artist')} {me?.guessedArtist && '✓'}
               </span>
               {renderMaskedText(room.track?.artist, room.revealData?.artistIndices, me?.guessedArtist)}
             </div>
           </div>
 
-          <div className="flex items-center space-x-3 bg-surface px-4 py-3 rounded-lg border border-gray-700 w-full max-w-[250px]">
-            <Volume2 size={20} className="text-gray-400 flex-shrink-0" />
+          <div className="flex items-center space-x-3 bg-surface px-4 py-3 rounded-lg border border-theme-border w-full max-w-[250px]">
+            <Volume2 size={20} className="text-theme-secondary flex-shrink-0" />
             <input 
               type="range" 
               min="0" max="1" step="0.05" 
@@ -188,14 +188,14 @@ export default function Arena({ room, socket }) {
         </div>
 
         {/* Lado Direito: Chat de Adivinhação */}
-        <div className="w-full md:w-1/2 flex flex-col bg-surface border border-gray-700 rounded-xl overflow-hidden min-h-[400px] md:min-h-0 md:h-full">
-          <div className="bg-background p-3 font-bold border-b border-gray-700">{t('guess_chat')}</div>
+        <div className="w-full md:w-1/2 flex flex-col bg-surface border border-theme-border rounded-xl overflow-hidden min-h-[400px] md:min-h-0 md:h-full">
+          <div className="bg-background p-3 font-bold border-b border-theme-border text-theme-text">{t('guess_chat')}</div>
           
           <div className="flex-grow overflow-y-auto p-4 space-y-2">
             {messages.map((msg, idx) => (
               <div key={idx} className={`p-2 rounded-lg ${
-                msg.type === 'system' ? (msg.correct ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 font-bold')
-                : 'bg-background border border-gray-700 text-gray-300'
+                msg.type === 'system' ? (msg.correct ? 'bg-green-500/20 text-green-500 dark:text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border border-yellow-500/30 font-bold')
+                : 'bg-background border border-theme-border text-theme-text'
               }`}>
                 {msg.type === 'chat' && <span className="font-bold text-accent-orange">{msg.sender}: </span>}
                 <span>{msg.key ? t(msg.key, msg.params) : msg.text}</span>
@@ -204,7 +204,7 @@ export default function Arena({ room, socket }) {
             <div ref={messagesEndRef} />
           </div>
 
-          <form onSubmit={handleSubmit} className="p-3 bg-background border-t border-gray-700 flex gap-2">
+          <form onSubmit={handleSubmit} className="p-3 bg-background border-t border-theme-border flex gap-2">
             <input
               ref={inputRef}
               type="text"
@@ -214,7 +214,7 @@ export default function Arena({ room, socket }) {
               autoFocus
               disabled={isOwner || (me?.guessedTitle && me?.guessedArtist)}
               placeholder={isOwner ? t('you_picked_this') : (me?.guessedTitle && me?.guessedArtist ? t('already_guessed_all') : t('type_guess'))}
-              className="flex-grow bg-surface border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent-pink disabled:opacity-50"
+              className="flex-grow bg-surface border border-theme-border rounded-lg px-4 py-2 text-theme-text focus:outline-none focus:border-accent-pink disabled:opacity-50"
             />
             <button 
               type="submit"

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="xm_gb_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4F1D1D"/>
+      <stop offset="100%" stop-color="#1F0808"/>
+    </radialGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#xm_gb_bg)"/>
+  <ellipse cx="60" cy="58" rx="28" ry="28" fill="#BC6C25"/>
+  <path d="M36,46 Q42,38 48,46 Q54,38 60,46 Q66,38 72,46 Q78,38 84,46" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <circle cx="49" cy="56" r="4" fill="#FFFFFF"/>
+  <circle cx="71" cy="56" r="4" fill="#FFFFFF"/>
+  <circle cx="49" cy="56" r="2" fill="#281404"/>
+  <circle cx="71" cy="56" r="2" fill="#281404"/>
+  <circle cx="42" cy="64" r="4.5" fill="#FF8FAB"/>
+  <circle cx="78" cy="64" r="4.5" fill="#FF8FAB"/>
+  <path d="M49,67 Q60,78 71,67" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <polygon points="52,86 60,89 52,94" fill="#E63946"/>
+  <polygon points="68,86 60,89 68,94" fill="#E63946"/>
+  <circle cx="60" cy="89" r="2.5" fill="#FFD166"/>
+  <circle cx="60" cy="98" r="3" fill="#2D6A4F"/>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="hw_w_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#142C23"/>
+      <stop offset="100%" stop-color="#08140F"/>
+    </radialGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#hw_w_bg)"/>
+  <path d="M38,55 C32,68 32,85 36,92 C42,88 44,75 44,65 Z" fill="#7B2CBF"/>
+  <path d="M82,55 C88,68 88,85 84,92 C78,88 76,75 76,65 Z" fill="#7B2CBF"/>
+  <ellipse cx="60" cy="65" rx="22" ry="24" fill="#B7E4C7"/>
+  <ellipse cx="51" cy="64" rx="4" ry="5.5" fill="#2D0A4E"/>
+  <ellipse cx="69" cy="64" rx="4" ry="5.5" fill="#2D0A4E"/>
+  <circle cx="50" cy="62" r="1.5" fill="#FFFFFF"/>
+  <circle cx="68" cy="62" r="1.5" fill="#FFFFFF"/>
+  <path d="M53,74 Q60,80 67,74" stroke="#1B4332" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <circle cx="47" cy="73" r="1.5" fill="#52B788"/>
+  <ellipse cx="60" cy="48" rx="38" ry="9" fill="#1C1924"/>
+  <path d="M34,48 L56,15 Q60,12 63,16 L86,48 Z" fill="#2B2638"/>
+  <path d="M38,46 L40,41 L80,41 L82,46 Z" fill="#9D4EDD"/>
+  <rect x="55" y="40" width="10" height="7" rx="1.5" fill="#FFB703"/>
+</svg>

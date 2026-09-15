@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="xm_gf_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3A1C28"/>
+      <stop offset="100%" stop-color="#1A0A10"/>
+    </radialGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#xm_gf_bg)"/>
+  <rect x="36" y="52" width="48" height="42" rx="6" fill="#E63946"/>
+  <rect x="32" y="44" width="56" height="12" rx="3" fill="#D90429"/>
+  <rect x="55" y="44" width="10" height="50" fill="#FFD166"/>
+  <rect x="36" y="68" width="48" height="8" fill="#FFD166"/>
+  <path d="M60,44 C52,30 38,32 44,42 C50,48 58,45 60,44 Z" fill="#FFD166"/>
+  <path d="M60,44 C68,30 82,32 76,42 C70,48 62,45 60,44 Z" fill="#FFD166"/>
+  <circle cx="60" cy="44" r="3.5" fill="#FFAA00"/>
+  <circle cx="48" cy="61" r="3.5" fill="#1A0A10"/>
+  <circle cx="72" cy="61" r="3.5" fill="#1A0A10"/>
+  <circle cx="49" cy="60" r="1.5" fill="#FFFFFF"/>
+  <circle cx="73" cy="60" r="1.5" fill="#FFFFFF"/>
+  <path d="M57,63 Q60,66 63,63" stroke="#1A0A10" stroke-width="1.5" fill="none"/>
+</svg>

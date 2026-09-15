@@ -93,7 +93,20 @@ const resources = {
       "qr_code": "QR Code",
       "scan_to_join": "Scan the QR code to join this room directly from your phone!",
       "close": "Close",
-      "open_qr": "Open QR Code"
+      "open_qr": "Open QR Code",
+      "toggle_theme": "Toggle theme",
+      "theme_dark": "Dark Mode",
+      "theme_light": "Light Mode",
+      "greeting_halloween": "Happy Halloween!",
+      "greeting_christmas": "Merry Christmas & Happy Holidays!",
+      "greeting_newyear": "Happy New Year {{year}}!",
+      "greeting_easter": "Happy Easter!",
+      "greeting_spring": "Welcome, Spring!",
+      "greeting_summer": "Welcome, Summer!",
+      "greeting_autumn": "Welcome, Autumn!",
+      "greeting_winter": "Welcome, Winter!",
+      "disable_seasonal_theme": "Disable seasonal theme",
+      "enable_seasonal_theme": "Enable seasonal theme"
     }
   },
   'pt-PT': {
@@ -187,7 +200,20 @@ const resources = {
       "qr_code": "Código QR",
       "scan_to_join": "Aponta a câmara do telemóvel para entrar na sala diretamente!",
       "close": "Fechar",
-      "open_qr": "Abrir Código QR"
+      "open_qr": "Abrir Código QR",
+      "toggle_theme": "Alternar tema",
+      "theme_dark": "Modo Escuro",
+      "theme_light": "Modo Claro",
+      "greeting_halloween": "Feliz Halloween!",
+      "greeting_christmas": "Feliz Natal e Boas Festas!",
+      "greeting_newyear": "Feliz Ano Novo {{year}}!",
+      "greeting_easter": "Feliz Páscoa!",
+      "greeting_spring": "Bem-vinda, Primavera!",
+      "greeting_summer": "Bem-vindo, Verão!",
+      "greeting_autumn": "Bem-vindo, Outono!",
+      "greeting_winter": "Bem-vindo, Inverno!",
+      "disable_seasonal_theme": "Desativar tema sazonal",
+      "enable_seasonal_theme": "Ativar tema sazonal"
     }
   },
   'es-ES': {
@@ -281,7 +307,20 @@ const resources = {
       "qr_code": "Código QR",
       "scan_to_join": "¡Apunta la cámara de tu móvil para entrar a la sala directamente!",
       "close": "Cerrar",
-      "open_qr": "Abrir Código QR"
+      "open_qr": "Abrir Código QR",
+      "toggle_theme": "Cambiar tema",
+      "theme_dark": "Modo Oscuro",
+      "theme_light": "Modo Claro",
+      "greeting_halloween": "¡Feliz Halloween!",
+      "greeting_christmas": "¡Feliz Navidad y Felices Fiestas!",
+      "greeting_newyear": "¡Feliz Año Nuevo {{year}}!",
+      "greeting_easter": "¡Feliz Pascua!",
+      "greeting_spring": "¡Bienvenida, Primavera!",
+      "greeting_summer": "¡Bienvenido, Verano!",
+      "greeting_autumn": "¡Bienvenido, Otoño!",
+      "greeting_winter": "¡Bienvenido, Invierno!",
+      "disable_seasonal_theme": "Desactivar tema estacional",
+      "enable_seasonal_theme": "Activar tema estacional"
     }
   },
   'fr-FR': {
@@ -375,7 +414,20 @@ const resources = {
       "qr_code": "Code QR",
       "scan_to_join": "Scannez le code QR pour rejoindre directement la salle depuis votre téléphone !",
       "close": "Fermer",
-      "open_qr": "Ouvrir le code QR"
+      "open_qr": "Ouvrir le code QR",
+      "toggle_theme": "Changer de thème",
+      "theme_dark": "Mode Sombre",
+      "theme_light": "Mode Clair",
+      "greeting_halloween": "Joyeux Halloween !",
+      "greeting_christmas": "Joyeux Noël et Bonnes Fêtes !",
+      "greeting_newyear": "Bonne Année {{year}} !",
+      "greeting_easter": "Joyeuses Pâques !",
+      "greeting_spring": "Bienvenue, Printemps !",
+      "greeting_summer": "Bienvenue, Été !",
+      "greeting_autumn": "Bienvenue, Automne !",
+      "greeting_winter": "Bienvenue, Hiver !",
+      "disable_seasonal_theme": "Désactiver le thème saisonnier",
+      "enable_seasonal_theme": "Activer le thème saisonnier"
     }
   }
 };

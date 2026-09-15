@@ -3,13 +3,17 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { SocketProvider } from './context/SocketContext';
 import Home from './pages/Home';
 import Room from './pages/Room';
+import SeasonalDecorations from './components/SeasonalDecorations';
+import DevThemeTester from './components/DevThemeTester';
 import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
     <SocketProvider>
+      <SeasonalDecorations />
+      <DevThemeTester />
       <BrowserRouter>
-        <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="min-h-screen flex items-center justify-center p-4 relative z-10">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/:roomId" element={<Home />} />

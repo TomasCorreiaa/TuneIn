@@ -35,7 +35,7 @@ export default function Scoreboard({ room, socket }) {
     <div className="flex flex-col h-full p-6 overflow-y-auto">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-accent-orange mb-2">{t('round_end_title')}</h2>
-        <p className="text-gray-400">{t('this_was_the_song')}</p>
+        <p className="text-theme-secondary">{t('this_was_the_song')}</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8 items-start">
@@ -56,7 +56,7 @@ export default function Scoreboard({ room, socket }) {
 
             {/* Absolute badge for owner */}
             {owner && (
-              <div className="absolute -bottom-4 -right-4 bg-accent-pink px-4 py-2 rounded-full shadow-lg font-bold flex items-center space-x-2 border-2 border-background">
+              <div className="absolute -bottom-4 -right-4 bg-accent-pink px-4 py-2 rounded-full shadow-lg font-bold flex items-center space-x-2 border-2 border-background text-white">
                 <img src={owner.avatar} alt={owner.nickname} className="w-6 h-6 rounded-full bg-black/50" />
                 <span>{t('choice_of', { name: owner.nickname })}</span>
               </div>
@@ -64,8 +64,8 @@ export default function Scoreboard({ room, socket }) {
           </div>
 
           <div className="text-center mt-6">
-            <h3 className="text-xl font-bold">{room.track?.title}</h3>
-            <p className="text-gray-400">{room.track?.artist}</p>
+            <h3 className="text-xl font-bold text-theme-text">{room.track?.title}</h3>
+            <p className="text-theme-secondary">{room.track?.artist}</p>
             {room.track?.trackViewUrl && (
               <a 
                 href={room.track.trackViewUrl} 
@@ -88,14 +88,14 @@ export default function Scoreboard({ room, socket }) {
             <>
               <div className="flex items-center space-x-2 mb-4">
                 <Trophy className="text-yellow-500" />
-                <h3 className="text-2xl font-bold">{t('leaderboard')}</h3>
+                <h3 className="text-2xl font-bold text-theme-text">{t('leaderboard')}</h3>
               </div>
 
-              <div className="space-y-3 bg-surface p-4 rounded-xl border border-gray-700 flex-grow">
+              <div className="space-y-3 bg-surface p-4 rounded-xl border border-theme-border flex-grow">
                 {sortedPlayers.map((player, index) => (
                   <div
                     key={player.id}
-                    className={`flex items-center justify-between p-3 rounded-lg ${player.id === me.id ? 'bg-background border border-accent-purple' : 'bg-background/50'}`}
+                    className={`flex items-center justify-between p-3 rounded-lg ${player.id === me.id ? 'bg-background border border-accent-purple' : 'bg-background/50 border border-theme-border'}`}
                   >
                     <div className="flex items-center space-x-3">
                       <div className={`
@@ -108,9 +108,9 @@ export default function Scoreboard({ room, socket }) {
                       </div>
                       <img src={player.avatar} alt={player.nickname} className="w-10 h-10 rounded-full bg-black/50" />
                       <div>
-                        <span className="font-bold">{player.nickname}</span>
+                        <span className="font-bold text-theme-text">{player.nickname}</span>
                         {(player.guessedTitle || player.guessedArtist) && player.id !== room.trackOwner && (
-                          <p className="text-xs text-green-400">
+                          <p className="text-xs text-green-500 dark:text-green-400">
                             {player.guessedTitle && player.guessedArtist ? t('guessed_all') :
                               player.guessedTitle ? t('guessed_title') : t('guessed_artist')}
                           </p>
@@ -125,8 +125,8 @@ export default function Scoreboard({ room, socket }) {
               </div>
 
               {room.autoNextRound ? (
-                <div className="mt-6 p-4 rounded-lg bg-surface border border-gray-700 text-center">
-                  <p className="text-gray-300">{t('next_round_starts_in')}</p>
+                <div className="mt-6 p-4 rounded-lg bg-surface border border-theme-border text-center">
+                  <p className="text-theme-secondary">{t('next_round_starts_in')}</p>
                   <div className="text-4xl font-bold text-accent-pink">{countdown}</div>
                 </div>
               ) : isHost ? (
@@ -138,7 +138,7 @@ export default function Scoreboard({ room, socket }) {
                   <ArrowRight size={20} />
                 </button>
               ) : (
-                <p className="text-center text-gray-400 mt-6 italic">
+                <p className="text-center text-theme-secondary mt-6 italic">
                   {t('waiting_for_host_next')}
                 </p>
               )}

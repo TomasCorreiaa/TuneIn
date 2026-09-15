@@ -20,7 +20,7 @@ export default function Podium({ room, socket }) {
         <h2 className="text-3xl font-bold text-yellow-500 mb-2 flex items-center justify-center gap-2">
           <Trophy size={32} /> {t('final_podium')} <Trophy size={32} />
         </h2>
-        <p className="text-gray-400 text-sm">{t('game_ended_podium')}</p>
+        <p className="text-theme-secondary text-sm">{t('game_ended_podium')}</p>
       </div>
 
       {/* Podium Top 3 */}
@@ -28,7 +28,7 @@ export default function Podium({ room, socket }) {
         {/* 2nd Place */}
         {top3[1] && (
           <div className="flex flex-col items-center">
-            <div className="text-lg font-bold text-gray-300 mb-1">{top3[1].nickname}</div>
+            <div className="text-lg font-bold text-theme-text mb-1">{top3[1].nickname}</div>
             <img src={top3[1].avatar} alt="2nd" className="w-12 h-12 rounded-full border-2 border-gray-400 mb-2 bg-black" />
             <div className="w-20 bg-gray-400 h-24 rounded-t-lg flex flex-col items-center justify-start pt-2 text-black font-bold">
               <span className="text-2xl">2</span>
@@ -65,17 +65,17 @@ export default function Podium({ room, socket }) {
 
       {/* Others */}
       {others.length > 0 && (
-        <div className="w-full mb-6 bg-surface rounded-xl p-3 border border-gray-700 flex-shrink-0">
-          <h3 className="font-bold text-gray-400 mb-2 flex items-center gap-2 text-sm">
+        <div className="w-full mb-6 bg-surface rounded-xl p-3 border border-theme-border flex-shrink-0">
+          <h3 className="font-bold text-theme-secondary mb-2 flex items-center gap-2 text-sm">
             <Medal size={16} /> {t('remaining_players')}
           </h3>
           <div className="space-y-2">
             {others.map((player, index) => (
-              <div key={player.id} className="flex items-center justify-between p-2 bg-background rounded-lg text-sm">
+              <div key={player.id} className="flex items-center justify-between p-2 bg-background border border-theme-border rounded-lg text-sm">
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-500 font-bold w-4">{index + 4}</span>
+                  <span className="text-theme-muted font-bold w-4">{index + 4}</span>
                   <img src={player.avatar} alt={player.nickname} className="w-6 h-6 rounded-full bg-black/50" />
-                  <span className="font-medium text-gray-300 truncate max-w-[80px]">{player.nickname}</span>
+                  <span className="font-medium text-theme-text truncate max-w-[80px]">{player.nickname}</span>
                 </div>
                 <span className="font-bold text-accent-orange">{player.score} {t('pts')}</span>
               </div>
@@ -95,7 +95,7 @@ export default function Podium({ room, socket }) {
           </button>
         </div>
       ) : (
-        <p className="text-center text-gray-400 mt-auto italic text-sm">{t('waiting_for_host_end')}</p>
+        <p className="text-center text-theme-secondary mt-auto italic text-sm">{t('waiting_for_host_end')}</p>
       )}
     </div>
   );

@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe, ChevronDown } from 'lucide-react';
+import Flag from './FlagIcons';
 
 const languages = [
-  { code: 'en-US', label: 'EN', flag: '🇺🇸' },
-  { code: 'pt-PT', label: 'PT', flag: '🇵🇹' },
-  { code: 'es-ES', label: 'ES', flag: '🇪🇸' },
-  { code: 'fr-FR', label: 'FR', flag: '🇫🇷' }
+  { code: 'en-US', label: 'EN' },
+  { code: 'pt-PT', label: 'PT' },
+  { code: 'es-ES', label: 'ES' },
+  { code: 'fr-FR', label: 'FR' }
 ];
 
 export default function LanguageSwitcher() {
@@ -33,29 +34,31 @@ export default function LanguageSwitcher() {
   const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative h-full flex items-center" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 bg-surface hover:bg-surface/80 px-3 py-2 rounded-lg border border-gray-700 transition-colors focus:outline-none focus:border-accent-pink"
+        className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-2 sm:py-2.5 transition-colors hover:bg-black/5 dark:hover:bg-white/5 focus:outline-none h-full"
       >
-        <Globe size={16} className="text-gray-400" />
-        <span className="text-sm text-white font-bold flex items-center gap-1">
-          {currentLang.flag} {currentLang.label}
+        <Globe size={16} className="text-theme-secondary" />
+        <span className="text-sm text-theme-text font-bold flex items-center gap-1.5">
+          <Flag code={currentLang.code} className="w-4.5 h-3.5" />
+          <span>{currentLang.label}</span>
         </span>
-        <ChevronDown size={14} className="text-gray-400" />
+        <ChevronDown size={14} className="text-theme-secondary" />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-32 bg-surface border border-gray-700 rounded-lg shadow-xl overflow-hidden z-[100]">
+        <div data-testid="language-dropdown" className="absolute right-0 mt-2 w-32 bg-surface border border-theme-border rounded-lg shadow-xl overflow-hidden z-[100]">
           {languages.map(lang => (
             <button
               key={lang.code}
+              data-testid={`lang-option-${lang.code}`}
               onClick={() => changeLanguage(lang.code)}
-              className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors flex items-center space-x-2
-                ${i18n.language === lang.code ? 'bg-accent-pink/20 text-accent-pink' : 'text-gray-300 hover:bg-gray-800 hover:text-white'}
+              className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors flex items-center space-x-2.5
+                ${i18n.language === lang.code ? 'bg-accent-pink/20 text-accent-pink font-bold' : 'text-theme-secondary hover:bg-black/5 dark:hover:bg-gray-800 hover:text-theme-text'}
               `}
             >
-              <span className="text-lg">{lang.flag}</span>
+              <Flag code={lang.code} className="w-5 h-3.5" />
               <span>{lang.label}</span>
             </button>
           ))}

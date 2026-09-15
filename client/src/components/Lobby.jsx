@@ -102,14 +102,14 @@ export default function Lobby({ room, socket, onOpenSettings }) {
     <div className="flex flex-col h-full p-3 sm:p-6 overflow-hidden">
       {/* Header do Lobby */}
       <div className="text-center mb-3 sm:mb-5 flex-shrink-0">
-        <h2 className="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">{t('lobby_title')}</h2>
-        <p className="text-xs sm:text-sm text-gray-400">{t('lobby_subtitle')}</p>
+        <h2 className="text-xl sm:text-3xl font-bold mb-1 sm:mb-2 text-theme-text">{t('lobby_title')}</h2>
+        <p className="text-xs sm:text-sm text-theme-secondary">{t('lobby_subtitle')}</p>
       </div>
 
       {/* Banner de Contagem Regressiva para Início de Jogo */}
       {room.countdown !== null && room.countdown !== undefined && (
         <div className="mb-3 bg-gradient-to-r from-accent-orange/20 to-accent-pink/20 border border-accent-pink/50 rounded-xl p-3 flex items-center justify-between animate-pulse flex-shrink-0">
-          <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
+          <div className="flex items-center gap-2 text-theme-text font-bold text-xs sm:text-sm">
             <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-accent-pink text-white font-mono text-sm font-bold flex-shrink-0">
               {room.countdown}
             </span>
@@ -118,7 +118,7 @@ export default function Lobby({ room, socket, onOpenSettings }) {
           {isHost && (
             <button
               onClick={() => socket.emit('cancelCountdown', { roomId: room.id })}
-              className="bg-surface/80 hover:bg-surface text-gray-300 hover:text-white text-xs px-2.5 py-1 rounded border border-gray-600 transition-colors flex-shrink-0"
+              className="bg-surface/80 hover:bg-surface text-theme-secondary hover:text-theme-text text-xs px-2.5 py-1 rounded border border-theme-border transition-colors flex-shrink-0"
             >
               {t('cancel_timer')}
             </button>
@@ -129,14 +129,14 @@ export default function Lobby({ room, socket, onOpenSettings }) {
       <div className="flex-grow flex flex-col md:flex-row gap-3 sm:gap-6 md:gap-8 min-h-0 overflow-hidden">
         {/* Coluna Esquerda: Lista de Jogadores e Acesso a Definições */}
         <div className="w-full md:w-1/3 flex flex-col flex-shrink-0 md:h-full min-h-0">
-          <div className="bg-background/50 rounded-xl p-3 sm:p-4 border border-gray-700 flex flex-col max-h-28 sm:max-h-36 md:max-h-none md:flex-grow overflow-hidden">
+          <div className="bg-background/50 rounded-xl p-3 sm:p-4 border border-theme-border flex flex-col max-h-28 sm:max-h-36 md:max-h-none md:flex-grow overflow-hidden">
             <div className="flex items-center justify-between mb-2 sm:mb-4 flex-shrink-0">
               <h3 className="font-bold text-accent-orange text-sm sm:text-base">
                 {t('players_in_room', { count: room.players.length })}
               </h3>
               <button
                 onClick={handleOpenSettings}
-                className="p-1.5 rounded-lg bg-surface hover:bg-surface/80 text-gray-300 hover:text-accent-purple border border-gray-700 hover:border-accent-purple/50 transition-colors flex items-center justify-center"
+                className="p-1.5 rounded-lg bg-surface hover:bg-surface/80 text-theme-secondary hover:text-accent-purple border border-theme-border hover:border-accent-purple/50 transition-colors flex items-center justify-center"
                 title={t('room_settings')}
                 aria-label={t('room_settings')}
               >
@@ -146,10 +146,10 @@ export default function Lobby({ room, socket, onOpenSettings }) {
 
             <div className="space-y-2 sm:space-y-3 overflow-y-auto flex-grow pr-1">
               {room.players.map(player => (
-                <div key={player.id} className="flex items-center justify-between p-2 rounded-lg bg-surface">
+                <div key={player.id} className="flex items-center justify-between p-2 rounded-lg bg-surface border border-theme-border">
                   <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
                     <img src={player.avatar} alt={player.nickname} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/50 flex-shrink-0" />
-                    <span className="font-medium flex items-center gap-1.5 truncate max-w-[110px] sm:max-w-[140px] text-xs sm:text-sm">
+                    <span className="font-medium flex items-center gap-1.5 truncate max-w-[110px] sm:max-w-[140px] text-xs sm:text-sm text-theme-text">
                       <span className="truncate">{player.nickname}</span>
                       {room.hostId === player.id && <span className="text-[10px] sm:text-xs text-yellow-500 font-bold flex-shrink-0">{t('host')}</span>}
                       {player.gamesWon > 0 && (
@@ -197,20 +197,20 @@ export default function Lobby({ room, socket, onOpenSettings }) {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('search_placeholder')}
-                  className="flex-grow bg-background border border-gray-600 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink transition-all"
+                  className="flex-grow bg-background border border-theme-border rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-theme-text focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink transition-all"
                 />
                 <button 
                   type="submit"
                   disabled={isSearching}
-                  className="bg-surface border border-accent-pink hover:bg-accent-pink/20 text-white font-bold py-2 sm:py-2.5 px-4 sm:px-5 rounded-lg transition-all disabled:opacity-50 flex-shrink-0"
+                  className="bg-surface border border-accent-pink hover:bg-accent-pink/20 text-accent-pink hover:text-accent-purple font-bold py-2 sm:py-2.5 px-4 sm:px-5 rounded-lg transition-all disabled:opacity-50 flex-shrink-0"
                 >
                   <Search size={18} />
                 </button>
               </form>
               
               {/* Controlo de Volume Global */}
-              <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3 bg-surface p-2 sm:p-2.5 rounded-lg border border-gray-700 flex-shrink-0">
-                <Volume2 size={18} className="text-gray-400 flex-shrink-0" />
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3 bg-surface p-2 sm:p-2.5 rounded-lg border border-theme-border flex-shrink-0">
+                <Volume2 size={18} className="text-theme-secondary flex-shrink-0" />
                 <input 
                   type="range" 
                   min="0" max="1" step="0.05" 
@@ -223,21 +223,21 @@ export default function Lobby({ room, socket, onOpenSettings }) {
               {/* Lista de Resultados com scroll interno */}
               <div className="flex-1 min-h-0 overflow-y-auto space-y-2 mb-2 pr-1 sm:pr-2">
                 {isSearching ? (
-                  <div className="text-center text-gray-400 mt-6 sm:mt-10 animate-pulse text-sm">{t('searching')}</div>
+                  <div className="text-center text-theme-secondary mt-6 sm:mt-10 animate-pulse text-sm">{t('searching')}</div>
                 ) : searchResults.length > 0 ? (
                   searchResults.map(track => (
                     <div 
                       key={track.trackId} 
                       className={`flex items-center justify-between p-2.5 rounded-lg border transition-all cursor-pointer
-                        ${selectedTrack?.trackId === track.trackId ? 'bg-accent-pink/20 border-accent-pink' : 'bg-background border-gray-700 hover:border-gray-500'}
+                        ${selectedTrack?.trackId === track.trackId ? 'bg-accent-pink/20 border-accent-pink' : 'bg-background border-theme-border hover:border-accent-pink/50'}
                       `}
                       onClick={() => handleSelectTrack(track)}
                     >
                       <div className="flex items-center space-x-3 overflow-hidden">
                         <img src={track.artworkUrl100} alt={track.trackName} className="w-10 h-10 rounded object-cover flex-shrink-0" />
                         <div className="truncate">
-                          <p className="font-bold truncate text-white text-xs sm:text-sm">{track.trackName}</p>
-                          <p className="text-[11px] sm:text-xs text-gray-400 truncate">{track.artistName}</p>
+                          <p className="font-bold truncate text-theme-text text-xs sm:text-sm">{track.trackName}</p>
+                          <p className="text-[11px] sm:text-xs text-theme-secondary truncate">{track.artistName}</p>
                         </div>
                       </div>
                       
@@ -247,7 +247,7 @@ export default function Lobby({ room, socket, onOpenSettings }) {
                           togglePreview(track.previewUrl);
                         }}
                         className={`p-2 rounded-full border transition-all flex-shrink-0 ml-2
-                          ${playingPreview === track.previewUrl ? 'bg-accent-orange border-accent-orange text-white' : 'bg-surface border-gray-600 hover:border-accent-orange text-gray-300'}
+                          ${playingPreview === track.previewUrl ? 'bg-accent-orange border-accent-orange text-white' : 'bg-surface border-theme-border hover:border-accent-orange text-theme-secondary'}
                         `}
                       >
                         {playingPreview === track.previewUrl ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
@@ -255,14 +255,14 @@ export default function Lobby({ room, socket, onOpenSettings }) {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center text-gray-500 mt-6 sm:mt-10 text-xs sm:text-sm px-4">
+                  <div className="text-center text-theme-muted mt-6 sm:mt-10 text-xs sm:text-sm px-4">
                     {t('search_hint')}
                   </div>
                 )}
               </div>
               
               {/* Secção Inferior com Botão Sempre Visível */}
-              <div className="flex-shrink-0 pt-2 border-t border-gray-800/80">
+              <div className="flex-shrink-0 pt-2 border-t border-theme-border">
                 {room.players.length < 2 && (
                   <div className="text-yellow-500 text-xs font-bold text-center mb-2 p-1.5 bg-yellow-500/10 border border-yellow-500/20 rounded">
                     {t('need_more_players')}
@@ -283,8 +283,8 @@ export default function Lobby({ room, socket, onOpenSettings }) {
               <div className="inline-block p-4 rounded-full bg-green-500/20 border border-green-500 mb-2 sm:mb-4">
                 <CheckCircle2 className="text-green-500 w-12 h-12 sm:w-16 sm:h-16" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold">{t('music_confirmed')}</h3>
-              <p className="text-xs sm:text-sm text-gray-400">{t('waiting_for_others')}</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-theme-text">{t('music_confirmed')}</h3>
+              <p className="text-xs sm:text-sm text-theme-secondary">{t('waiting_for_others')}</p>
               {canStartTimer && (
                 <button
                   onClick={() => socket.emit('startCountdown', { roomId: room.id })}

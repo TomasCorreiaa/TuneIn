@@ -4,7 +4,10 @@ import { useSocket } from '../context/SocketContext';
 import { Users, Music, User, Plus, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import ThemeToggle from '../components/ThemeToggle';
+import SeasonalBanner from '../components/SeasonalBanner';
 import { getSessionToken } from '../utils/session';
+import { getRandomAvatar } from '../utils/avatarService';
 
 export default function Home() {
   const { roomId: urlRoomId } = useParams();
@@ -16,11 +19,24 @@ export default function Home() {
   const [avatar, setAvatar] = useState(() => {
     const saved = localStorage.getItem('tunein_avatar');
     if (saved) return saved;
-    const generated = `https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random()}`;
+    const generated = getRandomAvatar();
     localStorage.setItem('tunein_avatar', generated);
     return generated;
   });
   const [isCreating, setIsCreating] = useState(false);
+
+  useEffect(() => {
+    const handleThemeChange = (e) => {
+      const newTheme = e.detail;
+      if (newTheme === 'halloween' || newTheme === 'christmas') {
+        const nextAvatar = getRandomAvatar(newTheme);
+        setAvatar(nextAvatar);
+        localStorage.setItem('tunein_avatar', nextAvatar);
+      }
+    };
+    window.addEventListener('seasonalThemeChange', handleThemeChange);
+    return () => window.removeEventListener('seasonalThemeChange', handleThemeChange);
+  }, []);
 
   const handleCreateRoom = (e) => {
     e.preventDefault();
@@ -53,37 +69,45 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full max-w-4xl p-4 sm:p-6 relative">
-      <div className="w-full flex justify-end -mt-4 sm:-mt-6 mb-6 sm:mb-8 z-50">
-        <LanguageSwitcher />
+    <div className="w-full max-w-4xl p-4 sm:p-6 relative z-10">
+      <div className="w-full flex justify-end items-center gap-2 -mt-4 sm:-mt-6 mb-6 sm:mb-8 z-50">
+        <div className="flex items-center bg-surface rounded-lg border border-theme-border shadow-sm divide-x divide-theme-border/60">
+          <ThemeToggle />
+          <LanguageSwitcher />
+        </div>
       </div>
 
-      <div className="text-center mb-8 sm:mb-12">
+      <div className="text-center mb-8 sm:mb-12 flex flex-col items-center">
+        <SeasonalBanner className="mb-2 sm:mb-3 animate-festive-banner" />
         <div className="inline-block relative">
           <h1 className="text-5xl sm:text-7xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-accent-orange via-accent-pink to-accent-purple mb-3 sm:mb-4 animate-gradient-x">
             TuneIn
           </h1>
           <Music className="absolute -top-3 -right-6 sm:-top-5 sm:-right-8 text-accent-pink animate-bounce w-8 h-8 sm:w-11 sm:h-11 md:w-12 md:h-12" />
         </div>
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-theme-text mb-4">
           {t('home_title')}
         </h2>
       </div>
 
-      <div className="glass-panel p-8 space-y-8">
+      <div className="glass-panel p-5 sm:p-8 space-y-6 sm:space-y-8 relative z-10 shadow-2xl">
         <div className="flex flex-col items-center">
           <img src={avatar || undefined} alt="Avatar" className="w-24 h-24 rounded-full bg-surface border-2 border-accent-purple mb-4" />
           <button
             type="button"
-            onClick={() => setAvatar(`https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random()}`)}
-            className="text-xs text-accent-pink hover:text-accent-purple transition-colors"
+            onClick={() => {
+              const newAvatar = getRandomAvatar(undefined, avatar);
+              setAvatar(newAvatar);
+              localStorage.setItem('tunein_avatar', newAvatar);
+            }}
+            className="text-xs text-accent-purple hover:underline"
           >
             {t('change_avatar')}
           </button>
         </div>
 
         <div>
-          <label className="block text-gray-300 font-bold mb-2 flex items-center space-x-2">
+          <label className="block text-theme-secondary font-bold mb-2 flex items-center space-x-2">
             <User size={18} className="text-accent-orange" />
             <span>{t('nickname_label')}</span>
           </label>
@@ -91,7 +115,7 @@ export default function Home() {
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            className="w-full bg-background border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent-orange focus:ring-1 focus:ring-accent-orange transition-all"
+            className="w-full bg-background border border-theme-border rounded-lg px-4 py-3 text-theme-text focus:outline-none focus:border-accent-orange focus:ring-1 focus:ring-accent-orange transition-all"
             placeholder={t('nickname_placeholder')}
             maxLength={15}
           />
@@ -119,9 +143,9 @@ export default function Home() {
               </button>
 
               <div className="relative flex items-center py-2">
-                <div className="flex-grow border-t border-gray-700"></div>
-                <span className="flex-shrink-0 mx-4 text-gray-500 text-sm">{t('or')}</span>
-                <div className="flex-grow border-t border-gray-700"></div>
+                <div className="flex-grow border-t border-theme-border"></div>
+                <span className="flex-shrink-0 mx-4 text-theme-muted text-sm">{t('or')}</span>
+                <div className="flex-grow border-t border-theme-border"></div>
               </div>
 
               <div className="flex space-x-2">
@@ -129,14 +153,16 @@ export default function Home() {
                   type="text"
                   value={roomCode}
                   onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                  className="flex-grow bg-background border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple transition-all font-mono"
+                  className="min-w-0 flex-1 bg-background border border-theme-border rounded-lg px-3 sm:px-4 py-3 text-theme-text focus:outline-none focus:border-accent-purple focus:ring-1 focus:ring-accent-purple transition-all font-mono text-center sm:text-left text-sm sm:text-base tracking-wider placeholder:tracking-normal placeholder:text-xs sm:placeholder:text-sm"
                   placeholder={t('enter_code')}
                   maxLength={6}
                 />
                 <button
                   onClick={handleJoinRoom}
                   disabled={!nickname.trim() || roomCode.length < 6}
-                  className="flex items-center justify-center bg-surface border border-accent-purple hover:bg-accent-purple/20 text-white font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50"
+                  className="flex-shrink-0 flex items-center justify-center bg-surface border border-accent-purple hover:bg-accent-purple/20 text-theme-text font-bold py-3 px-4 sm:px-6 rounded-lg transition-all disabled:opacity-50"
+                  title={t('join_room')}
+                  aria-label={t('join_room')}
                 >
                   <Users size={20} />
                 </button>
