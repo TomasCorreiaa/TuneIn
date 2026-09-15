@@ -106,7 +106,16 @@ const resources = {
       "greeting_autumn": "Welcome, Autumn!",
       "greeting_winter": "Welcome, Winter!",
       "disable_seasonal_theme": "Disable seasonal theme",
-      "enable_seasonal_theme": "Enable seasonal theme"
+      "enable_seasonal_theme": "Enable seasonal theme",
+      "footer_copyright": "© {{year}} TuneIn",
+      "footer_privacy": "privacy policy",
+      "footer_terms": "terms of service",
+      "footer_email": "email us!",
+      "back_to_home": "Back to Home",
+      "terms_title": "Terms of Service",
+      "terms_last_updated": "Last updated: March 2026",
+      "privacy_title": "Privacy Policy",
+      "privacy_last_updated": "Last updated: March 2026"
     }
   },
   'pt-PT': {
@@ -213,7 +222,16 @@ const resources = {
       "greeting_autumn": "Bem-vindo, Outono!",
       "greeting_winter": "Bem-vindo, Inverno!",
       "disable_seasonal_theme": "Desativar tema sazonal",
-      "enable_seasonal_theme": "Ativar tema sazonal"
+      "enable_seasonal_theme": "Ativar tema sazonal",
+      "footer_copyright": "© {{year}} TuneIn",
+      "footer_privacy": "política de privacidade",
+      "footer_terms": "termos e condições",
+      "footer_email": "email us!",
+      "back_to_home": "Voltar ao Início",
+      "terms_title": "Termos e Condições do Serviço",
+      "terms_last_updated": "Última atualização: Março de 2026",
+      "privacy_title": "Política de Privacidade",
+      "privacy_last_updated": "Última atualização: Março de 2026"
     }
   },
   'es-ES': {
@@ -320,7 +338,16 @@ const resources = {
       "greeting_autumn": "¡Bienvenido, Otoño!",
       "greeting_winter": "¡Bienvenido, Invierno!",
       "disable_seasonal_theme": "Desactivar tema estacional",
-      "enable_seasonal_theme": "Activar tema estacional"
+      "enable_seasonal_theme": "Activar tema estacional",
+      "footer_copyright": "© {{year}} TuneIn",
+      "footer_privacy": "política de privacidad",
+      "footer_terms": "términos del servicio",
+      "footer_email": "email us!",
+      "back_to_home": "Volver al Inicio",
+      "terms_title": "Términos del Servicio",
+      "terms_last_updated": "Última actualización: Marzo de 2026",
+      "privacy_title": "Política de Privacidad",
+      "privacy_last_updated": "Última actualización: Marzo de 2026"
     }
   },
   'fr-FR': {
@@ -427,7 +454,16 @@ const resources = {
       "greeting_autumn": "Bienvenue, Automne !",
       "greeting_winter": "Bienvenue, Hiver !",
       "disable_seasonal_theme": "Désactiver le thème saisonnier",
-      "enable_seasonal_theme": "Activer le thème saisonnier"
+      "enable_seasonal_theme": "Activer le thème saisonnier",
+      "footer_copyright": "© {{year}} TuneIn",
+      "footer_privacy": "politique de confidentialité",
+      "footer_terms": "conditions d'utilisation",
+      "footer_email": "email us!",
+      "back_to_home": "Retour à l'accueil",
+      "terms_title": "Conditions Générales d'Utilisation",
+      "terms_last_updated": "Dernière mise à jour : Mars 2026",
+      "privacy_title": "Politique de Confidentialité",
+      "privacy_last_updated": "Dernière mise à jour : Mars 2026"
     }
   }
 };

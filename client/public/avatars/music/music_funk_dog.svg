@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="dog_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4C0519"/>
+      <stop offset="100%" stop-color="#140107"/>
+    </radialGradient>
+    <linearGradient id="dog_hp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C084FC"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <circle cx="60" cy="60" r="58" fill="url(#dog_bg)"/>
+
+  <!-- Floppy Dog Ears (Behind) -->
+  <ellipse cx="32" cy="54" rx="10" ry="18" transform="rotate(20 32 54)" fill="#B45309"/>
+  <ellipse cx="88" cy="54" rx="10" ry="18" transform="rotate(-20 88 54)" fill="#B45309"/>
+
+  <!-- Head -->
+  <ellipse cx="60" cy="62" rx="27" ry="24" fill="#FBBF24"/>
+
+  <!-- Muzzle -->
+  <ellipse cx="60" cy="71" rx="15" ry="11" fill="#FEF3C7"/>
+  <ellipse cx="60" cy="67" rx="6" ry="4" fill="#1C140E"/>
+
+  <!-- Happy Mouth & Little Tongue -->
+  <path d="M55,71 Q60,76 65,71" stroke="#1C140E" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M58,74 Q60,82 62,74 Z" fill="#FB7185"/>
+
+  <!-- Cute Puppy Eyes -->
+  <circle cx="49" cy="57" r="4.5" fill="#1C140E"/>
+  <circle cx="47.5" cy="55" r="1.8" fill="#FFFFFF"/>
+  <circle cx="71" cy="57" r="4.5" fill="#1C140E"/>
+  <circle cx="69.5" cy="55" r="1.8" fill="#FFFFFF"/>
+
+  <!-- Eyebrows -->
+  <ellipse cx="49" cy="50" rx="3" ry="1.5" fill="#B45309"/>
+  <ellipse cx="71" cy="50" rx="3" ry="1.5" fill="#B45309"/>
+
+  <!-- Funk Headphones -->
+  <path d="M28,62 C22,22 98,22 92,62" stroke="url(#dog_hp)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <rect x="20" y="52" width="12" height="24" rx="6" fill="#A855F7"/>
+  <rect x="22" y="55" width="8" height="18" rx="4" fill="#EC4899"/>
+  <circle cx="26" cy="64" r="2" fill="#FFFFFF"/>
+
+  <rect x="88" y="52" width="12" height="24" rx="6" fill="#A855F7"/>
+  <rect x="90" y="55" width="8" height="18" rx="4" fill="#EC4899"/>
+  <circle cx="94" cy="64" r="2" fill="#FFFFFF"/>
+
+  <!-- Sparkle Note -->
+  <path d="M96,28 L104,24 L104,35 M96,38 A3,3 0 1,1 96,32 A3,3 0 0,1 96,38" stroke="#EC4899" stroke-width="2" fill="#EC4899" stroke-linecap="round"/>
+</svg>

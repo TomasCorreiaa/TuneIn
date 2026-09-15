@@ -8,6 +8,7 @@ import ThemeToggle from '../components/ThemeToggle';
 import SeasonalBanner from '../components/SeasonalBanner';
 import { getSessionToken } from '../utils/session';
 import { getRandomAvatar } from '../utils/avatarService';
+import Footer from '../components/Footer';
 
 export default function Home() {
   const { roomId: urlRoomId } = useParams();
@@ -18,7 +19,7 @@ export default function Home() {
   const [roomCode, setRoomCode] = useState(urlRoomId || '');
   const [avatar, setAvatar] = useState(() => {
     const saved = localStorage.getItem('tunein_avatar');
-    if (saved) return saved;
+    if (saved && !saved.includes('dicebear.com/7.x/bottts')) return saved;
     const generated = getRandomAvatar();
     localStorage.setItem('tunein_avatar', generated);
     return generated;
@@ -171,6 +172,8 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      <Footer className="mt-4 sm:mt-6" />
     </div>
   );
 }

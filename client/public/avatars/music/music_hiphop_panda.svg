@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="panda_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#142C33"/>
+      <stop offset="100%" stop-color="#061217"/>
+    </radialGradient>
+    <linearGradient id="panda_gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE066"/>
+      <stop offset="100%" stop-color="#F39C12"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <circle cx="60" cy="60" r="58" fill="url(#panda_bg)"/>
+
+  <!-- Ears -->
+  <circle cx="36" cy="36" r="13" fill="#1C1924"/>
+  <circle cx="84" cy="36" r="13" fill="#1C1924"/>
+
+  <!-- Head -->
+  <circle cx="60" cy="64" r="28" fill="#F8F9FA"/>
+
+  <!-- Backwards Cap -->
+  <path d="M34,48 Q60,32 86,48 Q60,42 34,48 Z" fill="#E63946"/>
+  <rect x="42" y="32" width="36" height="15" rx="6" fill="#E63946"/>
+  <ellipse cx="60" cy="32" rx="16" ry="5" fill="#D90429"/>
+  <!-- Cap visor -->
+  <path d="M46,32 Q60,26 74,32 Q60,30 46,32 Z" fill="#2B2D42"/>
+
+  <!-- Panda Eye Patches (angled) -->
+  <ellipse cx="48" cy="62" rx="8" ry="10" transform="rotate(-18 48 62)" fill="#1C1924"/>
+  <ellipse cx="72" cy="62" rx="8" ry="10" transform="rotate(18 72 62)" fill="#1C1924"/>
+
+  <!-- Eyes -->
+  <circle cx="49" cy="61" r="3.5" fill="#FFFFFF"/>
+  <circle cx="49.5" cy="61" r="2" fill="#1C1924"/>
+  <circle cx="50" cy="60" r="1" fill="#FFFFFF"/>
+
+  <circle cx="71" cy="61" r="3.5" fill="#FFFFFF"/>
+  <circle cx="70.5" cy="61" r="2" fill="#1C1924"/>
+  <circle cx="70" cy="60" r="1" fill="#FFFFFF"/>
+
+  <!-- Nose & Smile -->
+  <ellipse cx="60" cy="72" rx="4.5" ry="3" fill="#1C1924"/>
+  <path d="M56,76 Q60,80 64,76" stroke="#1C1924" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Cheeks -->
+  <circle cx="41" cy="72" r="3.5" fill="#FF8FAB" opacity="0.6"/>
+  <circle cx="79" cy="72" r="3.5" fill="#FF8FAB" opacity="0.6"/>
+
+  <!-- Golden Studio Headphones -->
+  <path d="M29,62 C24,20 96,20 91,62" stroke="url(#panda_gold)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <rect x="21" y="52" width="13" height="25" rx="6" fill="#F39C12"/>
+  <rect x="24" y="55" width="7" height="19" rx="3" fill="#FFE066"/>
+  <circle cx="27.5" cy="64.5" r="2" fill="#1C1924"/>
+
+  <rect x="86" y="52" width="13" height="25" rx="6" fill="#F39C12"/>
+  <rect x="89" y="55" width="7" height="19" rx="3" fill="#FFE066"/>
+  <circle cx="92.5" cy="64.5" r="2" fill="#1C1924"/>
+
+  <!-- Beat note -->
+  <path d="M98,28 L104,24 L104,34 M98,37 A3,3 0 1,1 98,31 A3,3 0 0,1 98,37" stroke="#FFE066" stroke-width="2" fill="#FFE066" stroke-linecap="round"/>
+</svg>

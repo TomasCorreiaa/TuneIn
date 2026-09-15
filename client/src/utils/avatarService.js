@@ -34,6 +34,22 @@ export const CHRISTMAS_AVATARS = [
   { id: 'xm_gift', name: 'Prenda Encantada', url: '/avatars/christmas/xm_gift.svg' },
 ];
 
+// -------------------------------------------------------------
+// COLEÇÃO DE MÚSICA (PADRÃO TUNEIN)
+// -------------------------------------------------------------
+export const MUSIC_AVATARS = [
+  { id: 'music_dj_bear', name: 'Urso DJ', url: '/avatars/music/music_dj_bear.svg' },
+  { id: 'music_rock_fox', name: 'Raposa Rocker', url: '/avatars/music/music_rock_fox.svg' },
+  { id: 'music_hiphop_panda', name: 'Panda Beat', url: '/avatars/music/music_hiphop_panda.svg' },
+  { id: 'music_jazz_cat', name: 'Gato Jazz', url: '/avatars/music/music_jazz_cat.svg' },
+  { id: 'music_pop_bunny', name: 'Coelho Pop', url: '/avatars/music/music_pop_bunny.svg' },
+  { id: 'music_synth_frog', name: 'Sapo Synth', url: '/avatars/music/music_synth_frog.svg' },
+  { id: 'music_groovy_lion', name: 'Leão Groovy', url: '/avatars/music/music_groovy_lion.svg' },
+  { id: 'music_monkey_beats', name: 'Macaco Beats', url: '/avatars/music/music_monkey_beats.svg' },
+  { id: 'music_funk_dog', name: 'Cão Funk', url: '/avatars/music/music_funk_dog.svg' },
+  { id: 'music_lofi_koala', name: 'Koala Lo-Fi', url: '/avatars/music/music_lofi_koala.svg' },
+];
+
 /**
  * Retorna a lista de avatares temáticos disponíveis para a época indicada.
  * Se não for uma época especial com coleção própria, retorna [].
@@ -67,7 +83,7 @@ export function getSeasonalAvatarList(theme) {
  * Retorna um avatar aleatório respeitando a temática sazonal ativa:
  * - Em época de Halloween: sorteia entre os avatares de Halloween.
  * - Em época de Natal: sorteia entre os avatares de Natal.
- * - Fora de época ou em temas normais: gera robô do DiceBear (bottts).
+ * - Fora de época ou em temas padrão: sorteia entre os avatares musicais com auscultadores (MUSIC_AVATARS).
  * 
  * @param {string} [theme] Tema opcional; se omitido, deteta automaticamente o tema ativo.
  * @param {string} [currentAvatarUrl] URL do avatar atual para evitar repetições consecutivas.
@@ -86,18 +102,14 @@ export function getRandomAvatar(theme, currentAvatarUrl) {
   }
 
   const seasonalList = getSeasonalAvatarList(currentTheme);
+  const poolList = seasonalList.length > 0 ? seasonalList : MUSIC_AVATARS;
 
-  if (seasonalList.length > 0) {
-    const pool = currentAvatarUrl 
-      ? seasonalList.filter(a => a.url !== currentAvatarUrl)
-      : seasonalList;
-    const finalPool = pool.length > 0 ? pool : seasonalList;
-    const randomIndex = Math.floor(Math.random() * finalPool.length);
-    return finalPool[randomIndex].url;
-  }
-
-  // Padrão fora de época: coleção bottts do DiceBear
-  return `https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random().toString(36).substring(2, 9)}`;
+  const pool = currentAvatarUrl 
+    ? poolList.filter(a => a.url !== currentAvatarUrl)
+    : poolList;
+  const finalPool = pool.length > 0 ? pool : poolList;
+  const randomIndex = Math.floor(Math.random() * finalPool.length);
+  return finalPool[randomIndex].url;
 }
 
 /**
@@ -107,7 +119,17 @@ export function getRandomAvatar(theme, currentAvatarUrl) {
  */
 export function isSeasonalAvatar(avatarUrl) {
   return typeof avatarUrl === 'string' && (
-    avatarUrl.startsWith('/avatars/') || 
+    avatarUrl.startsWith('/avatars/halloween/') || 
+    avatarUrl.startsWith('/avatars/christmas/') ||
     avatarUrl.startsWith('data:image/svg+xml')
   );
+}
+
+/**
+ * Verifica se um avatar pertence à coleção de mascotes musicais do TuneIn.
+ * @param {string} avatarUrl 
+ * @returns {boolean}
+ */
+export function isMusicAvatar(avatarUrl) {
+  return typeof avatarUrl === 'string' && avatarUrl.startsWith('/avatars/music/');
 }

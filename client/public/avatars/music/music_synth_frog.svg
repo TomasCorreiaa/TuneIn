@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="frog_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#064E3B"/>
+      <stop offset="100%" stop-color="#022018"/>
+    </radialGradient>
+    <linearGradient id="frog_hp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A3E635"/>
+      <stop offset="100%" stop-color="#FACC15"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <circle cx="60" cy="60" r="58" fill="url(#frog_bg)"/>
+
+  <!-- Frog Big Eye Orbs -->
+  <circle cx="42" cy="46" r="14" fill="#10B981"/>
+  <circle cx="78" cy="46" r="14" fill="#10B981"/>
+
+  <!-- Head Base -->
+  <ellipse cx="60" cy="68" rx="30" ry="22" fill="#10B981"/>
+  <ellipse cx="60" cy="74" rx="20" ry="12" fill="#A7F3D0"/>
+
+  <!-- Frog Eyes -->
+  <circle cx="43" cy="46" r="9" fill="#FFFFFF"/>
+  <ellipse cx="44" cy="46" rx="4.5" ry="5.5" fill="#064E3B"/>
+  <circle cx="42" cy="44" r="1.8" fill="#FFFFFF"/>
+
+  <circle cx="77" cy="46" r="9" fill="#FFFFFF"/>
+  <ellipse cx="76" cy="46" rx="4.5" ry="5.5" fill="#064E3B"/>
+  <circle cx="74" cy="44" r="1.8" fill="#FFFFFF"/>
+
+  <!-- Cheerful Wide Frog Smile -->
+  <path d="M42,68 Q60,82 78,68" stroke="#047857" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Rosy cheeks -->
+  <circle cx="38" cy="68" r="4" fill="#F472B6" opacity="0.6"/>
+  <circle cx="82" cy="68" r="4" fill="#F472B6" opacity="0.6"/>
+
+  <!-- Synth Headphones -->
+  <path d="M28,66 C22,24 98,24 92,66" stroke="url(#frog_hp)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <rect x="20" y="56" width="12" height="24" rx="6" fill="#65A30D"/>
+  <rect x="22" y="59" width="8" height="18" rx="4" fill="#A3E635"/>
+  <circle cx="26" cy="68" r="2" fill="#FFFFFF"/>
+
+  <rect x="88" y="56" width="12" height="24" rx="6" fill="#65A30D"/>
+  <rect x="90" y="59" width="8" height="18" rx="4" fill="#A3E635"/>
+  <circle cx="94" cy="68" r="2" fill="#FFFFFF"/>
+
+  <!-- Soundwave / Synth icon -->
+  <line x1="97" y1="36" x2="97" y2="28" stroke="#A3E635" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="102" y1="38" x2="102" y2="24" stroke="#FACC15" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="107" y1="35" x2="107" y2="30" stroke="#A3E635" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

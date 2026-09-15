@@ -14,6 +14,7 @@ import { Copy, QrCode } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getSessionToken } from '../utils/session';
 import { getRandomAvatar } from '../utils/avatarService';
+import Footer from '../components/Footer';
 
 export default function Room() {
   const { roomId } = useParams();
@@ -178,6 +179,8 @@ export default function Room() {
         {room.state === 'results' && <Scoreboard room={room} socket={socket} />}
         {room.state === 'podium' && <Podium room={room} socket={socket} />}
       </div>
+
+      <Footer compact className="mt-2 flex-shrink-0" />
 
       <QrCodeModal 
         isOpen={isQrOpen} 

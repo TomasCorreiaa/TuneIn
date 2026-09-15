@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { getSeasonalAvatarList, getRandomAvatar, isSeasonalAvatar, HALLOWEEN_AVATARS, CHRISTMAS_AVATARS } from '../avatarService';
+import { 
+  getSeasonalAvatarList, 
+  getRandomAvatar, 
+  isSeasonalAvatar, 
+  isMusicAvatar,
+  HALLOWEEN_AVATARS, 
+  CHRISTMAS_AVATARS,
+  MUSIC_AVATARS 
+} from '../avatarService';
 
 describe('avatarService utility', () => {
   it('deve retornar lista de 8 avatares para Halloween com URLs válidos', () => {
@@ -14,6 +22,14 @@ describe('avatarService utility', () => {
     expect(list.length).toBe(8);
     expect(list[0].id).toBe('xm_santa');
     expect(list[0].url).toBe('/avatars/christmas/xm_santa.svg');
+  });
+
+  it('deve conter 10 avatares musicais na coleção padrão do TuneIn', () => {
+    expect(MUSIC_AVATARS.length).toBe(10);
+    MUSIC_AVATARS.forEach(avatar => {
+      expect(avatar.url).toMatch(/^\/avatars\/music\/music_.*\.svg$/);
+      expect(isMusicAvatar(avatar.url)).toBe(true);
+    });
   });
 
   it('deve retornar lista vazia para temas sem coleção sazonal exclusiva', () => {
@@ -33,9 +49,10 @@ describe('avatarService utility', () => {
     expect(isSeasonalAvatar(avatar)).toBe(true);
   });
 
-  it('getRandomAvatar deve retornar robô DiceBear quando theme="default"', () => {
+  it('getRandomAvatar deve retornar um avatar musical com auscultadores quando theme="default"', () => {
     const avatar = getRandomAvatar('default');
-    expect(avatar).toContain('https://api.dicebear.com/7.x/bottts/svg?seed=');
+    expect(avatar).toContain('/avatars/music/');
+    expect(isMusicAvatar(avatar)).toBe(true);
     expect(isSeasonalAvatar(avatar)).toBe(false);
   });
 
@@ -48,9 +65,8 @@ describe('avatarService utility', () => {
   });
 
   it('getRandomAvatar deve evitar repetir o avatar atual se houver outras opções', () => {
-    const list = getSeasonalAvatarList('halloween');
-    const current = list[0].url;
-    const next = getRandomAvatar('halloween', current);
+    const current = MUSIC_AVATARS[0].url;
+    const next = getRandomAvatar('default', current);
     expect(next).not.toBe(current);
   });
 });

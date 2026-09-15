@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="dj_bear_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2D1B4E"/>
+      <stop offset="100%" stop-color="#120A21"/>
+    </radialGradient>
+    <linearGradient id="dj_bear_hp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F5D4"/>
+      <stop offset="100%" stop-color="#00BBF9"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <circle cx="60" cy="60" r="58" fill="url(#dj_bear_bg)"/>
+  
+  <!-- Ears -->
+  <circle cx="36" cy="38" r="14" fill="#8D5B36"/>
+  <circle cx="36" cy="38" r="8" fill="#D49B6A"/>
+  <circle cx="84" cy="38" r="14" fill="#8D5B36"/>
+  <circle cx="84" cy="38" r="8" fill="#D49B6A"/>
+
+  <!-- Head -->
+  <ellipse cx="60" cy="64" rx="28" ry="25" fill="#A26B42"/>
+
+  <!-- Muzzle -->
+  <ellipse cx="60" cy="73" rx="16" ry="12" fill="#E8C39E"/>
+  <ellipse cx="60" cy="68" rx="5" ry="3.5" fill="#2B1A0E"/>
+  <path d="M60,71.5 L60,77 M55,75 Q60,79 65,75" stroke="#2B1A0E" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Eyes with reflections -->
+  <ellipse cx="49" cy="58" rx="4" ry="5" fill="#1C140E"/>
+  <circle cx="47.5" cy="56" r="1.5" fill="#FFFFFF"/>
+  <ellipse cx="71" cy="58" rx="4" ry="5" fill="#1C140E"/>
+  <circle cx="69.5" cy="56" r="1.5" fill="#FFFFFF"/>
+
+  <!-- Cheeks -->
+  <circle cx="42" cy="67" r="4" fill="#FF8FAB" opacity="0.5"/>
+  <circle cx="78" cy="67" r="4" fill="#FF8FAB" opacity="0.5"/>
+
+  <!-- DJ Headphones: Headband -->
+  <path d="M30,62 C26,24 94,24 90,62" stroke="url(#dj_bear_hp)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <!-- Headphones Ear Cups -->
+  <rect x="23" y="52" width="12" height="24" rx="6" fill="#00BBF9"/>
+  <rect x="25" y="55" width="8" height="18" rx="4" fill="#00F5D4"/>
+  <circle cx="29" cy="64" r="2" fill="#FFFFFF"/>
+
+  <rect x="85" y="52" width="12" height="24" rx="6" fill="#00BBF9"/>
+  <rect x="87" y="55" width="8" height="18" rx="4" fill="#00F5D4"/>
+  <circle cx="91" cy="64" r="2" fill="#FFFFFF"/>
+
+  <!-- Floating Musical Notes -->
+  <path d="M96,28 L104,24 L104,36 M96,39 A3,3 0 1,1 96,33 A3,3 0 0,1 96,39 M104,35 A3,3 0 1,1 104,29 A3,3 0 0,1 104,35" stroke="#F15BB5" stroke-width="2" fill="#F15BB5" stroke-linecap="round"/>
+</svg>

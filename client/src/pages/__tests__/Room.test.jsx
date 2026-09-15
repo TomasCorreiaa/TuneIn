@@ -57,4 +57,18 @@ describe('Room Page', () => {
 
     expect(navigator.clipboard.writeText).toHaveBeenCalled();
   });
+
+  it('deve renderizar o rodapé no lobby e na sala de jogo', () => {
+    render(
+      <MemoryRouter
+        initialEntries={[{ pathname: '/room/ABC123', state: { initialRoom: createInitialRoom('lobby') } }]}
+      >
+        <Routes>
+          <Route path="/room/:roomId" element={<Room />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('footer')).toBeInTheDocument();
+  });
 });

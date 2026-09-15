@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="bunny_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3B0764"/>
+      <stop offset="100%" stop-color="#140224"/>
+    </radialGradient>
+    <linearGradient id="bunny_hp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F472B6"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <circle cx="60" cy="60" r="58" fill="url(#bunny_bg)"/>
+
+  <!-- Bunny Ears -->
+  <ellipse cx="45" cy="30" rx="8" ry="20" transform="rotate(-10 45 30)" fill="#FDF2F8"/>
+  <ellipse cx="45" cy="30" rx="4.5" ry="15" transform="rotate(-10 45 30)" fill="#F472B6"/>
+
+  <ellipse cx="75" cy="30" rx="8" ry="20" transform="rotate(10 75 30)" fill="#FDF2F8"/>
+  <ellipse cx="75" cy="30" rx="4.5" ry="15" transform="rotate(10 75 30)" fill="#F472B6"/>
+
+  <!-- Head -->
+  <circle cx="60" cy="67" r="26" fill="#FDF2F8"/>
+
+  <!-- Big Pop Eyes -->
+  <ellipse cx="49" cy="63" rx="5" ry="6" fill="#831843"/>
+  <circle cx="47.5" cy="61" r="2.5" fill="#FFFFFF"/>
+  <circle cx="51" cy="65" r="1.2" fill="#FFFFFF"/>
+
+  <ellipse cx="71" cy="63" rx="5" ry="6" fill="#831843"/>
+  <circle cx="69.5" cy="61" r="2.5" fill="#FFFFFF"/>
+  <circle cx="73" cy="65" r="1.2" fill="#FFFFFF"/>
+
+  <!-- Pink Cheeks -->
+  <circle cx="40" cy="71" r="4" fill="#F472B6" opacity="0.6"/>
+  <circle cx="80" cy="71" r="4" fill="#F472B6" opacity="0.6"/>
+
+  <!-- Nose & Mouth -->
+  <polygon points="60,70 57.5,67 62.5,67" fill="#EC4899"/>
+  <path d="M57,72 Q60,75 63,72" stroke="#831843" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+  <!-- Pop Star Headphones -->
+  <path d="M30,66 C24,28 96,28 90,66" stroke="url(#bunny_hp)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <rect x="22" y="56" width="12" height="23" rx="6" fill="#DB2777"/>
+  <rect x="24" y="59" width="8" height="17" rx="4" fill="#F472B6"/>
+  <polygon points="28,67 29,69 31,69 29.5,70.5 30,72.5 28,71 26,72.5 26.5,70.5 25,69 27,69" fill="#FFFFFF"/>
+
+  <rect x="86" y="56" width="12" height="23" rx="6" fill="#DB2777"/>
+  <rect x="88" y="59" width="8" height="17" rx="4" fill="#F472B6"/>
+  <polygon points="92,67 93,69 95,69 93.5,70.5 94,72.5 92,71 90,72.5 90.5,70.5 89,69 91,69" fill="#FFFFFF"/>
+
+  <!-- Music Notes -->
+  <path d="M96,26 L104,22 L104,33 M96,36 A3,3 0 1,1 96,30 A3,3 0 0,1 96,36" stroke="#F472B6" stroke-width="2" fill="#F472B6" stroke-linecap="round"/>
+</svg>

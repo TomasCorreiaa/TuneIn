@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="lion_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#451A03"/>
+      <stop offset="100%" stop-color="#1A0701"/>
+    </radialGradient>
+    <linearGradient id="lion_hp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <circle cx="60" cy="60" r="58" fill="url(#lion_bg)"/>
+
+  <!-- Fluffy Mane (Petal-style circles) -->
+  <circle cx="40" cy="45" r="13" fill="#B45309"/>
+  <circle cx="60" cy="38" r="13" fill="#B45309"/>
+  <circle cx="80" cy="45" r="13" fill="#B45309"/>
+  <circle cx="34" cy="62" r="13" fill="#B45309"/>
+  <circle cx="86" cy="62" r="13" fill="#B45309"/>
+  <circle cx="42" cy="78" r="13" fill="#B45309"/>
+  <circle cx="60" cy="82" r="13" fill="#B45309"/>
+  <circle cx="78" cy="78" r="13" fill="#B45309"/>
+
+  <!-- Lion Ears -->
+  <circle cx="36" cy="46" r="8" fill="#F59E0B"/>
+  <circle cx="36" cy="46" r="4.5" fill="#FEF3C7"/>
+  <circle cx="84" cy="46" r="8" fill="#F59E0B"/>
+  <circle cx="84" cy="46" r="4.5" fill="#FEF3C7"/>
+
+  <!-- Lion Face -->
+  <circle cx="60" cy="63" r="23" fill="#FBBF24"/>
+
+  <!-- Muzzle -->
+  <ellipse cx="60" cy="71" rx="13" ry="9" fill="#FEF3C7"/>
+  <polygon points="60,67 56,63 64,63" fill="#78350F"/>
+  <path d="M60,67 L60,73 M56,71 Q60,75 64,71" stroke="#78350F" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Eyes with Groovy Look -->
+  <ellipse cx="50" cy="58" rx="4" ry="4.5" fill="#1C140E"/>
+  <circle cx="48.5" cy="56.5" r="1.5" fill="#FFFFFF"/>
+  <ellipse cx="70" cy="58" rx="4" ry="4.5" fill="#1C140E"/>
+  <circle cx="68.5" cy="56.5" r="1.5" fill="#FFFFFF"/>
+
+  <!-- Groovy Tri-Color Headphones -->
+  <path d="M28,62 C22,22 98,22 92,62" stroke="url(#lion_hp)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <rect x="20" y="52" width="13" height="24" rx="6" fill="#DC2626"/>
+  <rect x="23" y="55" width="7" height="18" rx="3" fill="#F59E0B"/>
+  <circle cx="26.5" cy="64" r="2" fill="#10B981"/>
+
+  <rect x="87" y="52" width="13" height="24" rx="6" fill="#DC2626"/>
+  <rect x="90" y="55" width="7" height="18" rx="3" fill="#F59E0B"/>
+  <circle cx="93.5" cy="64" r="2" fill="#10B981"/>
+
+  <!-- Musical floating note -->
+  <path d="M96,28 L104,24 L104,35 M96,38 A3,3 0 1,1 96,32 A3,3 0 0,1 96,38" stroke="#FBBF24" stroke-width="2" fill="#FBBF24" stroke-linecap="round"/>
+</svg>

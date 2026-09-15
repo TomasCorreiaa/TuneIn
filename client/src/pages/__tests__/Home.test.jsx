@@ -18,7 +18,7 @@ describe('Home Page', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('TuneIn')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'TuneIn' })).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/JogadorMusical|PlayerMusical/i)).toBeInTheDocument();
   });
 

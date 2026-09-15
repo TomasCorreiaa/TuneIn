@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="rock_fox_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3D1226"/>
+      <stop offset="100%" stop-color="#14060C"/>
+    </radialGradient>
+    <linearGradient id="rock_fox_hp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F72585"/>
+      <stop offset="100%" stop-color="#7209B7"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <circle cx="60" cy="60" r="58" fill="url(#rock_fox_bg)"/>
+
+  <!-- Fox Ears -->
+  <polygon points="32,46 22,18 46,34" fill="#E76F51"/>
+  <polygon points="30,42 25,24 42,35" fill="#FFFFFF"/>
+  <polygon points="26,23 22,18 31,23" fill="#1C140E"/>
+
+  <polygon points="88,46 98,18 74,34" fill="#E76F51"/>
+  <polygon points="90,42 95,24 78,35" fill="#FFFFFF"/>
+  <polygon points="94,23 98,18 89,23" fill="#1C140E"/>
+
+  <!-- Head -->
+  <ellipse cx="60" cy="65" rx="28" ry="24" fill="#E76F51"/>
+  <polygon points="34,68 60,86 86,68" fill="#E76F51"/>
+
+  <!-- White Cheeks -->
+  <path d="M34,64 Q46,78 60,85 Q74,78 86,64 Q60,76 34,64 Z" fill="#FFFFFF"/>
+
+  <!-- Nose -->
+  <polygon points="60,86 56,81 64,81" fill="#1C140E"/>
+
+  <!-- Cool Star / Rock Sunglasses -->
+  <polygon points="48,56 52,63 45,60 48,56" fill="#FEE440"/>
+  <rect x="36" y="55" width="20" height="12" rx="4" fill="#1C140E"/>
+  <rect x="64" y="55" width="20" height="12" rx="4" fill="#1C140E"/>
+  <line x1="56" y1="60" x2="64" y2="60" stroke="#1C140E" stroke-width="3"/>
+  <!-- Glare on glasses -->
+  <line x1="40" y1="57" x2="44" y2="65" stroke="#F72585" stroke-width="2" stroke-linecap="round"/>
+  <line x1="68" y1="57" x2="72" y2="65" stroke="#F72585" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Rock Headphones Headband -->
+  <path d="M28,64 C22,22 98,22 92,64" stroke="url(#rock_fox_hp)" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <!-- Ear Cups -->
+  <rect x="20" y="54" width="13" height="24" rx="6" fill="#7209B7"/>
+  <rect x="23" y="57" width="7" height="18" rx="3" fill="#F72585"/>
+  <circle cx="26.5" cy="66" r="2" fill="#FFFFFF"/>
+
+  <rect x="87" y="54" width="13" height="24" rx="6" fill="#7209B7"/>
+  <rect x="90" y="57" width="7" height="18" rx="3" fill="#F72585"/>
+  <circle cx="93.5" cy="66" r="2" fill="#FFFFFF"/>
+
+  <!-- Sparkle / Lightning accent -->
+  <polygon points="102,28 97,36 101,36 96,44 105,34 100,34" fill="#FEE440"/>
+</svg>
