@@ -13,7 +13,7 @@ import SettingsModal from '../components/SettingsModal';
 import { Copy, QrCode } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getSessionToken } from '../utils/session';
-import { getRandomAvatar } from '../utils/avatarService';
+import { getRandomAvatar, isSeasonalAvatar, isMusicAvatar, getSeasonalAvatarList } from '../utils/avatarService';
 import Footer from '../components/Footer';
 
 export default function Room() {
@@ -41,7 +41,11 @@ export default function Room() {
     const sessionToken = querySessionToken || getSessionToken();
 
     const nickname = queryNickname || storedNickname;
-    const avatar = queryAvatar || storedAvatar || getRandomAvatar();
+    let avatar = queryAvatar || storedAvatar;
+    const isSeasonalActive = getSeasonalAvatarList().length > 0;
+    if (!avatar || isMusicAvatar(avatar) || (!isSeasonalActive && isSeasonalAvatar(avatar))) {
+      avatar = getRandomAvatar();
+    }
 
     // Se a sala ainda não estiver carregada (ex.: F5 ou navegação direta)
     if (!room) {

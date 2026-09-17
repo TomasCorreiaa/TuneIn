@@ -7,7 +7,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import ThemeToggle from '../components/ThemeToggle';
 import SeasonalBanner from '../components/SeasonalBanner';
 import { getSessionToken } from '../utils/session';
-import { getRandomAvatar } from '../utils/avatarService';
+import { getRandomAvatar, isSeasonalAvatar, isMusicAvatar, getSeasonalAvatarList } from '../utils/avatarService';
 import Footer from '../components/Footer';
 
 export default function Home() {
@@ -19,7 +19,15 @@ export default function Home() {
   const [roomCode, setRoomCode] = useState(urlRoomId || '');
   const [avatar, setAvatar] = useState(() => {
     const saved = localStorage.getItem('tunein_avatar');
-    if (saved && !saved.includes('dicebear.com/7.x/bottts')) return saved;
+    const isSeasonalActive = getSeasonalAvatarList().length > 0;
+    if (saved && !saved.includes('dicebear.com/7.x/bottts') && !isMusicAvatar(saved)) {
+      if (!isSeasonalActive && isSeasonalAvatar(saved)) {
+        const generated = getRandomAvatar();
+        localStorage.setItem('tunein_avatar', generated);
+        return generated;
+      }
+      return saved;
+    }
     const generated = getRandomAvatar();
     localStorage.setItem('tunein_avatar', generated);
     return generated;
@@ -31,6 +39,10 @@ export default function Home() {
       const newTheme = e.detail;
       if (newTheme === 'halloween' || newTheme === 'christmas') {
         const nextAvatar = getRandomAvatar(newTheme);
+        setAvatar(nextAvatar);
+        localStorage.setItem('tunein_avatar', nextAvatar);
+      } else {
+        const nextAvatar = getRandomAvatar('default');
         setAvatar(nextAvatar);
         localStorage.setItem('tunein_avatar', nextAvatar);
       }

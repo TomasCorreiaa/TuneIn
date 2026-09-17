@@ -4,7 +4,11 @@
  * e utiliza a coleção clássica de robôs fora de época.
  */
 
+import { Style, Avatar } from '@dicebear/core';
+import botttsNeutral from '@dicebear/styles/bottts-neutral.json';
 import { getActiveSeasonalTheme } from './seasonalTheme';
+
+const botttsNeutralStyle = new Style(botttsNeutral);
 
 // -------------------------------------------------------------
 // COLEÇÃO DE HALLOWEEN
@@ -80,14 +84,29 @@ export function getSeasonalAvatarList(theme) {
 }
 
 /**
+ * Gera um avatar DiceBear do tipo Bottts Neutral em formato Data URI SVG.
+ * @param {string} [seed] Semente única para determinismo; se omitida, gera uma aleatória.
+ * @param {object} [options] Opções adicionais de customização do avatar DiceBear.
+ * @returns {string} Data URI do avatar SVG.
+ */
+export function getBotttsNeutralAvatar(seed, options = {}) {
+  const avatarSeed = seed || Math.random().toString(36).substring(2, 12);
+  const avatar = new Avatar(botttsNeutralStyle, {
+    seed: avatarSeed,
+    ...options,
+  });
+  return avatar.toDataUri();
+}
+
+/**
  * Retorna um avatar aleatório respeitando a temática sazonal ativa:
  * - Em época de Halloween: sorteia entre os avatares de Halloween.
  * - Em época de Natal: sorteia entre os avatares de Natal.
- * - Fora de época ou em temas padrão: sorteia entre os avatares musicais com auscultadores (MUSIC_AVATARS).
+ * - Fora de época ou em temas padrão: gera um avatar de robô Bottts Neutral via DiceBear.
  * 
  * @param {string} [theme] Tema opcional; se omitido, deteta automaticamente o tema ativo.
- * @param {string} [currentAvatarUrl] URL do avatar atual para evitar repetições consecutivas.
- * @returns {string} URL do avatar.
+ * @param {string} [currentAvatarUrl] URL/URI do avatar atual para evitar repetições consecutivas.
+ * @returns {string} URL ou Data URI do avatar.
  */
 export function getRandomAvatar(theme, currentAvatarUrl) {
   let currentTheme = theme;
@@ -102,31 +121,49 @@ export function getRandomAvatar(theme, currentAvatarUrl) {
   }
 
   const seasonalList = getSeasonalAvatarList(currentTheme);
-  const poolList = seasonalList.length > 0 ? seasonalList : MUSIC_AVATARS;
+  if (seasonalList.length > 0) {
+    const pool = currentAvatarUrl 
+      ? seasonalList.filter(a => a.url !== currentAvatarUrl)
+      : seasonalList;
+    const finalPool = pool.length > 0 ? pool : seasonalList;
+    const randomIndex = Math.floor(Math.random() * finalPool.length);
+    return finalPool[randomIndex].url;
+  }
 
-  const pool = currentAvatarUrl 
-    ? poolList.filter(a => a.url !== currentAvatarUrl)
-    : poolList;
-  const finalPool = pool.length > 0 ? pool : poolList;
-  const randomIndex = Math.floor(Math.random() * finalPool.length);
-  return finalPool[randomIndex].url;
+  // Quando não está nenhum evento / tema aplicado, gera um avatar Bottts Neutral via DiceBear
+  let newAvatar = getBotttsNeutralAvatar();
+  if (currentAvatarUrl && newAvatar === currentAvatarUrl) {
+    newAvatar = getBotttsNeutralAvatar();
+  }
+  return newAvatar;
 }
 
 /**
- * Verifica se um avatar é de um tema sazonal.
+ * Verifica se um avatar é de um tema sazonal (Halloween ou Natal).
  * @param {string} avatarUrl 
  * @returns {boolean}
  */
 export function isSeasonalAvatar(avatarUrl) {
   return typeof avatarUrl === 'string' && (
     avatarUrl.startsWith('/avatars/halloween/') || 
-    avatarUrl.startsWith('/avatars/christmas/') ||
-    avatarUrl.startsWith('data:image/svg+xml')
+    avatarUrl.startsWith('/avatars/christmas/')
   );
 }
 
 /**
- * Verifica se um avatar pertence à coleção de mascotes musicais do TuneIn.
+ * Verifica se um avatar foi gerado pela API do DiceBear (Data URI SVG ou URL DiceBear).
+ * @param {string} avatarUrl 
+ * @returns {boolean}
+ */
+export function isDiceBearAvatar(avatarUrl) {
+  return typeof avatarUrl === 'string' && (
+    avatarUrl.startsWith('data:image/svg+xml') ||
+    avatarUrl.includes('dicebear')
+  );
+}
+
+/**
+ * Verifica se um avatar pertence à coleção legada de mascotes musicais do TuneIn.
  * @param {string} avatarUrl 
  * @returns {boolean}
  */
