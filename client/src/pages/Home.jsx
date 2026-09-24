@@ -8,6 +8,7 @@ import ThemeToggle from '../components/ThemeToggle';
 import SeasonalBanner from '../components/SeasonalBanner';
 import { getSessionToken } from '../utils/session';
 import { getRandomAvatar, isSeasonalAvatar, isMusicAvatar, getSeasonalAvatarList } from '../utils/avatarService';
+import { isValidRoomCode, normalizeRoomCode } from '../utils/roomValidation';
 import Footer from '../components/Footer';
 
 export default function Home() {
@@ -16,7 +17,12 @@ export default function Home() {
   const socket = useSocket();
   const { t } = useTranslation();
   const [nickname, setNickname] = useState(() => localStorage.getItem('tunein_nickname') || '');
-  const [roomCode, setRoomCode] = useState(urlRoomId || '');
+  
+  const cleanUrlRoomId = urlRoomId && isValidRoomCode(urlRoomId) ? normalizeRoomCode(urlRoomId) : null;
+  const [roomCode, setRoomCode] = useState(cleanUrlRoomId || '');
+  const [isCheckingRoom, setIsCheckingRoom] = useState(false);
+  const [roomError, setRoomError] = useState('');
+  const [roomExists, setRoomExists] = useState(cleanUrlRoomId ? null : false);
   const [avatar, setAvatar] = useState(() => {
     const saved = localStorage.getItem('tunein_avatar');
     const isSeasonalActive = getSeasonalAvatarList().length > 0;
@@ -51,6 +57,46 @@ export default function Home() {
     return () => window.removeEventListener('seasonalThemeChange', handleThemeChange);
   }, []);
 
+  useEffect(() => {
+    if (!urlRoomId) return;
+
+    // Se o código da URL não for válido (ex.: /blacker com 7 letras ou caracteres inválidos), limpa a rota para /
+    if (!isValidRoomCode(urlRoomId)) {
+      navigate('/', { replace: true });
+      return;
+    }
+
+    if (!socket) return;
+
+    setIsCheckingRoom(true);
+    let isCancelled = false;
+
+    // Timeout de salvaguarda para não bloquear caso o servidor demore a responder
+    const timer = setTimeout(() => {
+      if (!isCancelled) {
+        setIsCheckingRoom(false);
+      }
+    }, 3500);
+
+    socket.emit('checkRoom', { roomId: cleanUrlRoomId }, (res) => {
+      clearTimeout(timer);
+      if (isCancelled) return;
+      setIsCheckingRoom(false);
+      if (res && res.exists) {
+        setRoomExists(true);
+        setRoomError('');
+      } else {
+        setRoomExists(false);
+        setRoomError(t('room_not_found'));
+      }
+    });
+
+    return () => {
+      isCancelled = true;
+      clearTimeout(timer);
+    };
+  }, [socket, urlRoomId, cleanUrlRoomId, navigate, t]);
+
   const handleCreateRoom = (e) => {
     e.preventDefault();
     if (!nickname.trim() || !socket) return;
@@ -71,14 +117,15 @@ export default function Home() {
 
   const handleJoinRoom = (e) => {
     e.preventDefault();
-    if (!nickname.trim() || !roomCode.trim() || !socket) return;
+    const targetRoom = cleanUrlRoomId || roomCode.trim();
+    if (!nickname.trim() || !targetRoom || !socket) return;
 
     const cleanNick = nickname.trim();
     localStorage.setItem('tunein_nickname', cleanNick);
     localStorage.setItem('tunein_avatar', avatar);
     const sessionToken = getSessionToken();
 
-    navigate(`/room/${roomCode}?nickname=${encodeURIComponent(cleanNick)}&avatar=${encodeURIComponent(avatar)}&sessionToken=${encodeURIComponent(sessionToken)}`);
+    navigate(`/room/${targetRoom}?nickname=${encodeURIComponent(cleanNick)}&avatar=${encodeURIComponent(avatar)}&sessionToken=${encodeURIComponent(sessionToken)}`);
   };
 
   return (
@@ -134,15 +181,30 @@ export default function Home() {
           />
         </div>
 
-        <div className="pt-4 space-y-4">
-          {urlRoomId ? (
+        {roomError && (
+          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm text-center flex items-center justify-center gap-2 animate-fade-in">
+            <span>⚠️ {roomError}</span>
+          </div>
+        )}
+
+        <div className="pt-2 space-y-4">
+          {cleanUrlRoomId && roomExists !== false ? (
             <button
               onClick={handleJoinRoom}
-              disabled={!nickname.trim()}
+              disabled={!nickname.trim() || isCheckingRoom}
               className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-accent-purple to-accent-pink hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 px-4 rounded-lg transition-all disabled:opacity-50 neon-glow"
             >
-              <Users size={20} />
-              <span>{t('join_room')} {urlRoomId.toUpperCase()}</span>
+              {isCheckingRoom ? (
+                <>
+                  <Loader2 className="animate-spin" size={20} />
+                  <span>{t('loading_room')}</span>
+                </>
+              ) : (
+                <>
+                  <Users size={20} />
+                  <span>{t('join_room')} {cleanUrlRoomId}</span>
+                </>
+              )}
             </button>
           ) : (
             <>

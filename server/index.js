@@ -141,6 +141,16 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('checkRoom', ({ roomId }, callback) => {
+    if (typeof callback !== 'function') return;
+    if (!roomId || typeof roomId !== 'string') {
+      return callback({ exists: false, error: 'Invalid room code' });
+    }
+    const cleanRoomId = roomId.trim().toUpperCase().slice(0, 10);
+    const exists = roomManager.rooms.has(cleanRoomId);
+    callback({ exists });
+  });
+
   socket.on('joinRoom', ({ roomId, playerData }, callback) => {
     if (typeof callback !== 'function') return;
     if (!roomId || typeof roomId !== 'string') {

@@ -1,0 +1,35 @@
+[2026-09-24 - Prompt 1]
+Prompt: este foi meu primeiro post sobre o jogohttps://www.instagram.com/p/DdHi4EUER5d/?utm_source=ig_web_copy_link&stkn=MzRlODBiNWFlZA==, gostava de fazer outro mas com as novas coisas que saíram: partilhar com qr code, temas sobre estações e épocas especiais, configurações que host pode aplicar ao jogo e é isso
+Objetivo: Criar conteúdo e proposta de novo post para o Instagram com as novas funcionalidades do TuneIn (partilha por QR Code, temas sazonais e épocas especiais, e configurações personalizadas para o Host).
+
+[2026-09-24 - Prompt 2]
+Prompt: cria me o post, os slides. não deverão aparecer 1 image de cada tema, mas dizer apenas que os temas existem, para essa feature
+Objetivo: Criar os slides completos do post de Instagram e a legenda correspondente, garantindo que no slide dos temas não aparece 1 imagem de cada tema individual, apenas a menção/indicação de que os temas sazonais existem.
+
+[2026-09-24 - Prompt 3]
+Prompt: qual url de local para isso
+Objetivo: Disponibilizar o URL local (via servidor Vite ou via file://) para visualizar os slides no browser.
+
+[2026-09-24 - Prompt 4]
+Prompt: ok, para slides aplica essas tipos de letra e cores tambem apenas, está bom o conteúdo: [imagem anexada do primeiro post original @curredev com a identidade visual: cores, fontes, logo TuneIn, moldura e estilo de texto]
+Objetivo: Ajustar todos os slides em Design/instagram_post_slides.html e client/public/slides.html para aplicar exatamente a tipografia, paleta de cores (fundo #0E101B, logo Tune em laranja e In em roxo, títulos em branco e rosa/coral, badges e botões idênticos ao post original), mantendo o conteúdo aprovado.
+
+[2026-09-24 - Prompt 5]
+Prompt: como fazer download para dar upload para o instagram como post, esses slides todos
+Objetivo: Implementar mecanismo de download direto de todos os slides em ficheiros de imagem PNG em alta resolução (1080x1350) para publicação direta no Instagram.
+
+[2026-09-24 - Prompt 6]
+Prompt: ok podes removar essas alterações, ja tenho os posts
+Objetivo: Remover os ficheiros temporários criados para a geração dos slides (client/public/slides.html e Design/instagram_post_slides.html), mantendo o repositório limpo.
+
+[2026-09-24 - Prompt 7]
+Prompt: notei uma coisa no site: http://localhost:5173/blacker ao escrever qualquer coisa a seguir ao principal, ele aparece no botão - juntar à sala blacker, e clico em juntar e fica em entrar sala para sempre. deverá apenas ler corretamente os códigos e saber se a sala existe, como recomendas fazer isto
+Objetivo: Analisar como o roteamento e a entrada de salas via URL estão implementados (ex.: /blacker), validar formato de código de sala e verificação de existência da sala sem ficar em loading infinito ("entrar sala" para sempre), recomendando a melhor arquitetura clean code sem overengineering.
+
+[2026-09-24 - Prompt 8]
+Prompt: procede
+Objetivo: Implementar a validação do formato de código de sala (6 caracteres alfanuméricos), verificação de existência da sala no backend/frontend e timeout de segurança contra bloqueio em "A entrar na sala...".
+
+[2026-09-24 - Prompt 9]
+Prompt: faz commit e push das alterações
+Objetivo: Fazer commit e push de todas as alterações para o repositório remoto.

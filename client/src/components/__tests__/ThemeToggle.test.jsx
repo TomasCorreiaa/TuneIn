@@ -6,6 +6,7 @@ import '../../i18n';
 describe('ThemeToggle Component', () => {
   beforeEach(() => {
     localStorage.clear();
+    localStorage.setItem('tunein_dev_seasonal_theme', 'default');
     document.documentElement.classList.remove('light');
     document.documentElement.removeAttribute('data-theme');
   });

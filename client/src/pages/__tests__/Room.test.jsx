@@ -71,4 +71,17 @@ describe('Room Page', () => {
 
     expect(screen.getByTestId('footer')).toBeInTheDocument();
   });
+
+  it('deve exibir erro imediato se o código de sala tiver formato inválido', () => {
+    render(
+      <MemoryRouter initialEntries={['/room/blacker']}>
+        <Routes>
+          <Route path="/room/:roomId" element={<Room />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/Código de sala inválido|Invalid room code/i)).toBeInTheDocument();
+    expect(mockSocket.emit).not.toHaveBeenCalledWith('joinRoom', expect.anything(), expect.anything());
+  });
 });

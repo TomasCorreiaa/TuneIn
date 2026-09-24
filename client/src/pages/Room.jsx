@@ -14,6 +14,7 @@ import { Copy, QrCode } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getSessionToken } from '../utils/session';
 import { getRandomAvatar, isSeasonalAvatar, isMusicAvatar, getSeasonalAvatarList } from '../utils/avatarService';
+import { isValidRoomCode } from '../utils/roomValidation';
 import Footer from '../components/Footer';
 
 export default function Room() {
@@ -30,8 +31,14 @@ export default function Room() {
   const { t } = useTranslation();
 
   useEffect(() => {
+    if (!roomId || !isValidRoomCode(roomId)) {
+      setError(t('invalid_room_code'));
+      return;
+    }
+
     if (!socket) return;
 
+    let joinTimeout = null;
     const queryNickname = searchParams.get('nickname');
     const queryAvatar = searchParams.get('avatar');
     const querySessionToken = searchParams.get('sessionToken');
@@ -54,9 +61,14 @@ export default function Room() {
         return;
       }
 
+      joinTimeout = setTimeout(() => {
+        setError(t('room_connection_timeout'));
+      }, 6000);
+
       socket.emit('joinRoom', { roomId, playerData: { nickname, avatar, sessionToken } }, (response) => {
+        clearTimeout(joinTimeout);
         if (!response.success) {
-          setError(response.error);
+          setError(response.error === 'Room not found' ? t('room_not_found') : response.error);
         } else {
           setRoom(response.room);
           if (queryNickname || queryAvatar || querySessionToken) {
@@ -65,9 +77,14 @@ export default function Room() {
         }
       });
     } else if (queryNickname && queryAvatar) {
+      joinTimeout = setTimeout(() => {
+        setError(t('room_connection_timeout'));
+      }, 6000);
+
       socket.emit('joinRoom', { roomId, playerData: { nickname, avatar, sessionToken } }, (response) => {
+        clearTimeout(joinTimeout);
         if (!response.success) {
-          setError(response.error);
+          setError(response.error === 'Room not found' ? t('room_not_found') : response.error);
         } else {
           setRoom(response.room);
           navigate(`/room/${roomId}`, { replace: true });
@@ -98,12 +115,13 @@ export default function Room() {
     socket.on('kicked', handleKicked);
 
     return () => {
+      if (joinTimeout) clearTimeout(joinTimeout);
       socket.off('roomUpdated', handleRoomUpdated);
       socket.off('gameStarted', handleGameStarted);
       socket.off('gameEnded', handleGameEnded);
       socket.off('kicked', handleKicked);
     };
-  }, [socket, roomId, searchParams, navigate]);
+  }, [socket, roomId, searchParams, navigate, t]);
 
   const handleCopyUrl = () => {
     const url = `${window.location.origin}/${roomId}`;
